@@ -97,13 +97,13 @@ const DATA = [
 ];
 
 const COLORS = { sf: "#3B82F6", core: "#8B5CF6", infra: "#10B981", fin: "#F59E0B" };
-const RANGE_START = new Date("2025-10-01");
-const RANGE_END = new Date("2027-01-01");
+const RANGE_START = new Date("2026-01-01");
+const RANGE_END = new Date("2026-12-31");
 const TOTAL_MS = RANGE_END - RANGE_START;
-function dateToPct(d) { return ((new Date(d) - RANGE_START) / TOTAL_MS) * 100; }
+function dateToPct(d) { return Math.max(0, Math.min(100, ((new Date(d) - RANGE_START) / TOTAL_MS) * 100)); }
 
 const quarters = [
-  ["Q4'25","2025-10-01"],["Q1'26","2026-01-01"],["Q2'26","2026-04-01"],
+  ["Q1'26","2026-01-01"],["Q2'26","2026-04-01"],
   ["Q3'26","2026-07-01"],["Q4'26","2026-10-01"]
 ];
 const headerEl = document.getElementById("timeline-header");
