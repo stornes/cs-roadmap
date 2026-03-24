@@ -5,157 +5,125 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Commercial Systems Roadmap 2026</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #0F172A; color: #E2E8F0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    padding: 32px 40px; min-height: 100vh;
-  }
-  .header { text-align: center; margin-bottom: 28px; }
-  .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-  .header .subtitle { color: #64748B; font-size: 13px; margin-top: 4px; }
-  .legend { display: flex; justify-content: center; gap: 24px; margin-bottom: 24px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94A3B8; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
-  .timeline-header { display: flex; margin-left: 280px; margin-bottom: 8px; }
-  .quarter-label {
-    flex: 1; font-size: 11px; font-weight: 600; color: #475569;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    border-left: 1px solid #1E293B; padding-left: 8px;
-  }
-  .chart { position: relative; }
-  .row { display: flex; align-items: center; height: 38px; }
-  .row.parent { height: 42px; }
-  .row.parent .label { font-weight: 700; font-size: 14px; color: #E2E8F0; }
-  .row:not(.parent) .label { color: #94A3B8; font-size: 13px; padding-left: 16px; }
-  .label {
-    width: 280px; flex-shrink: 0; text-align: right; padding-right: 16px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .bar-area { flex: 1; position: relative; height: 26px; }
-  .row.parent .bar-area { height: 30px; }
-  .bar-bg {
-    position: absolute; height: 100%; background: #1E293B; border-radius: 4px;
-    border: 1px solid #334155; cursor: pointer;
-    transition: border-color 0.2s, transform 0.15s;
-  }
-  .bar-bg:hover { border-color: #475569; transform: scaleY(1.08); z-index: 10; }
-  .bar-fill {
-    position: absolute; height: 100%; border-radius: 4px 0 0 4px;
-    pointer-events: none; transition: width 0.6s ease;
-  }
-  .bar-pct {
-    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-    font-size: 11px; font-weight: 700; color: #fff; pointer-events: none;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  }
-  .bar-tooltip {
-    display: none; position: absolute; bottom: calc(100% + 8px);
-    left: 50%; transform: translateX(-50%); background: #1E293B;
-    border: 1px solid #475569; border-radius: 8px; padding: 10px 14px;
-    font-size: 12px; color: #CBD5E1; white-space: nowrap; z-index: 100;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4); pointer-events: none;
-  }
-  .bar-tooltip .tt-title { font-weight: 700; color: #E2E8F0; font-size: 13px; }
-  .bar-tooltip .tt-status { margin-top: 4px; }
-  .bar-tooltip .tt-link { color: #60A5FA; margin-top: 4px; }
-  .bar-bg:hover .bar-tooltip { display: block; }
-  .today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: #EF4444; z-index: 20; opacity: 0.7; }
-  .today-label { position: absolute; top: -20px; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: #EF4444; letter-spacing: 0.5px; }
-  .quarter-grid { position: absolute; top: 0; bottom: 0; width: 1px; background: #1E293B; z-index: 1; }
-  .separator { height: 1px; background: #1E293B; margin: 4px 0 4px 280px; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0F172A;color:#E2E8F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;padding:20px 24px;overflow-x:hidden}
+  .hdr{display:flex;align-items:baseline;gap:16px;margin-bottom:16px}
+  .hdr h1{font-size:18px;font-weight:700;white-space:nowrap}
+  .hdr .sub{color:#64748B;font-size:11px}
+  .hdr .legend{display:flex;gap:14px;margin-left:auto}
+  .hdr .lg{display:flex;align-items:center;gap:4px;font-size:10px;color:#94A3B8}
+  .hdr .ld{width:8px;height:8px;border-radius:2px}
+  .grid{display:grid;grid-template-columns:200px 1fr;row-gap:2px;position:relative}
+  .qlabels{display:flex;grid-column:2;margin-bottom:4px}
+  .ql{flex:1;font-size:10px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.5px;border-left:1px solid #1E293B;padding-left:6px}
+  .lbl{font-size:12px;color:#94A3B8;text-align:left;padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:28px}
+  .lbl.p{font-weight:700;font-size:13px;color:#E2E8F0;line-height:32px}
+  .lbl.c{padding-left:14px;font-size:11px}
+  .bars{position:relative;height:28px}
+  .bars.p{height:32px}
+  .bar{position:absolute;height:100%;background:#1E293B;border-radius:3px;border:1px solid #334155;cursor:pointer;transition:border-color .15s,transform .12s}
+  .bar:hover{border-color:#60A5FA;transform:scaleY(1.1);z-index:10}
+  .fill{position:absolute;height:100%;border-radius:3px 0 0 3px;pointer-events:none}
+  .pct{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;font-weight:700;color:#fff;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+  .tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1E293B;border:1px solid #475569;border-radius:6px;padding:8px 12px;font-size:11px;color:#CBD5E1;white-space:nowrap;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,.5);pointer-events:none}
+  .tip .t{font-weight:700;color:#E2E8F0;font-size:12px}
+  .tip .s{margin-top:3px}
+  .tip .l{color:#60A5FA;margin-top:3px}
+  .bar:hover .tip{display:block}
+  .sep{grid-column:1/-1;height:1px;background:#1E293B;margin:3px 0}
+  .qline{position:absolute;top:0;bottom:0;width:1px;background:#1E293B;z-index:1}
+  .tline{position:absolute;top:0;bottom:0;width:2px;background:#EF4444;z-index:20;opacity:.7}
+  .tlbl{position:absolute;top:-16px;transform:translateX(-50%);font-size:9px;font-weight:700;color:#EF4444}
 </style>
 </head>
 <body>
-<div class="header">
+<div class="hdr">
   <h1>Commercial Systems Roadmap 2026</h1>
-  <div class="subtitle">Updated 2026-03-24</div>
+  <span class="sub">Updated 2026-03-24</span>
+  <div class="legend">
+    <div class="lg"><div class="ld" style="background:#3B82F6"></div>Salesforce</div>
+    <div class="lg"><div class="ld" style="background:#8B5CF6"></div>Booking Core</div>
+    <div class="lg"><div class="ld" style="background:#10B981"></div>Infrastructure</div>
+    <div class="lg"><div class="ld" style="background:#F59E0B"></div>Finance</div>
+  </div>
 </div>
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Salesforce</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Booking Core</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Infrastructure</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div>Finance</div>
+<div class="grid" id="grid">
+  <div></div>
+  <div class="qlabels" id="ql"></div>
 </div>
-<div class="timeline-header" id="timeline-header"></div>
-<div class="chart" id="chart"></div>
 <script>
 const DATA = [
-  { name: "Migrate Seaware to the Cloud", start: "2026-01-05", end: "2026-06-30", pct: 56, cat: "infra", jira: "https://hurtigruten.atlassian.net/browse/INFRA-2468", status: "20/39 done, 4 in progress, 15 to do. Weighted: 56%" },
+  { name: "Migrate Seaware to the Cloud", start: "2026-01-22", end: "2026-06-30", pct: 56, cat: "infra", jira: "https://hurtigruten.atlassian.net/browse/INFRA-2468", status: "20/39 done, 4 in progress, 15 to do. Weighted: 56%" },
   { name: "sep" },
-  { name: "Make all markets VAT compliant ", start: "2026-01-05", end: "2026-07-01", pct: 24, cat: "core", jira: "https://hurtigruten.atlassian.net/browse/PC-3888", status: "2/15 done, 2 in progress, 10 to do, 1 blocked. Weighted: 24%" },
-  { name: "Partner API", start: "2026-01-05", end: "2026-04-13", pct: 74, cat: "core", jira: "https://hurtigruten.atlassian.net/browse/AV-2324", status: "4/8 done, 3 in progress, 1 to do. Weighted: 74%" },
-  { name: "PG Core and Platform services", start: "2026-01-05", end: "2026-06-19", pct: 12, cat: "core", parent: true, jira: "https://hurtigruten.atlassian.net/jira/software/projects/SQSF/boards/407", status: "2 workstreams, avg 12%" },
-  { name: "Account read model - Salesforce|PolarGlobal integration", start: "2026-01-05", end: "2026-05-10", pct: 23, cat: "core", child: true, jira: "https://hurtigruten.atlassian.net/browse/AV-2325", status: "0/4 done, 1 in progress, 3 to do. Weighted: 23%" },
-  { name: "Add support for new payment methods", start: "2026-01-05", end: "2026-06-19", pct: 0, cat: "core", child: true, jira: "https://hurtigruten.atlassian.net/browse/AV-2328", status: "0/2 done, 0 in progress, 2 to do. Weighted: 0%" },
+  { name: "Make all markets VAT compliant ", start: "2026-03-12", end: "2026-07-01", pct: 24, cat: "core", jira: "https://hurtigruten.atlassian.net/browse/PC-3888", status: "2/15 done, 2 in progress, 10 to do, 1 blocked. Weighted: 24%" },
+  { name: "Partner API", start: "2026-03-12", end: "2026-04-13", pct: 74, cat: "core", jira: "https://hurtigruten.atlassian.net/browse/AV-2324", status: "4/8 done, 3 in progress, 1 to do. Weighted: 74%" },
+  { name: "PG Core and Platform services", start: "2026-03-12", end: "2026-06-19", pct: 12, cat: "core", parent: true, jira: "https://hurtigruten.atlassian.net/jira/software/projects/SQSF/boards/407", status: "2 workstreams, avg 12%" },
+  { name: "Account read model - Salesforce|PolarGlobal integration", start: "2026-03-12", end: "2026-05-10", pct: 23, cat: "core", child: true, jira: "https://hurtigruten.atlassian.net/browse/AV-2325", status: "0/4 done, 1 in progress, 3 to do. Weighted: 23%" },
+  { name: "Add support for new payment methods", start: "2026-03-12", end: "2026-06-19", pct: 0, cat: "core", child: true, jira: "https://hurtigruten.atlassian.net/browse/AV-2328", status: "0/2 done, 0 in progress, 2 to do. Weighted: 0%" },
   { name: "SF Lighthouse", start: "2026-01-05", end: "2026-07-31", pct: 40, cat: "sf", parent: true, jira: "https://hurtigruten.atlassian.net/jira/software/projects/SQSF/boards/407", status: "3 workstreams, avg 40%" },
-  { name: "Salesforce Voice - Amazon Connect", start: "2026-01-05", end: "2026-06-01", pct: 43, cat: "sf", child: true, jira: "https://hurtigruten.atlassian.net/browse/SQSF-6000", status: "10/32 done, 7 in progress, 15 to do. Weighted: 43%" },
+  { name: "Salesforce Voice - Amazon Connect", start: "2026-02-18", end: "2026-06-01", pct: 43, cat: "sf", child: true, jira: "https://hurtigruten.atlassian.net/browse/SQSF-6000", status: "10/32 done, 7 in progress, 15 to do. Weighted: 43%" },
   { name: "Omnichannel ", start: "2026-01-05", end: "2026-07-31", pct: 36, cat: "sf", child: true, jira: "https://hurtigruten.atlassian.net/browse/SQSF-5305", status: "5/41 done, 18 in progress, 18 to do. Weighted: 36%" },
   { name: "sep" },
   { name: "PG Client Migration to Local Install Architecture", start: "2026-01-05", end: "2026-04-15", pct: 88, cat: "core", jira: "https://hurtigruten.atlassian.net/browse/PC-3731", status: "14/17 done, 2 in progress, 1 to do. Weighted: 88%" },
-  { name: "Calabrio WFM", start: "2026-01-05", end: "2026-06-01", pct: 40, cat: "sf", child: true, jira: "https://hurtigruten.atlassian.net/browse/SQSF-5951", status: "2/5 done, 0 in progress, 3 to do. Weighted: 40%" },
+  { name: "Calabrio WFM", start: "2026-02-06", end: "2026-06-01", pct: 40, cat: "sf", child: true, jira: "https://hurtigruten.atlassian.net/browse/SQSF-5951", status: "2/5 done, 0 in progress, 3 to do. Weighted: 40%" },
 ];
+const C={sf:"#3B82F6",core:"#8B5CF6",infra:"#10B981",fin:"#F59E0B"};
+const RS=new Date("2026-01-01"),RE=new Date("2026-12-31"),TM=RE-RS;
+function p(d){return Math.max(0,Math.min(100,((new Date(d)-RS)/TM)*100))}
 
-const COLORS = { sf: "#3B82F6", core: "#8B5CF6", infra: "#10B981", fin: "#F59E0B" };
-const RANGE_START = new Date("2026-01-01");
-const RANGE_END = new Date("2026-12-31");
-const TOTAL_MS = RANGE_END - RANGE_START;
-function dateToPct(d) { return Math.max(0, Math.min(100, ((new Date(d) - RANGE_START) / TOTAL_MS) * 100)); }
+const Q=[["Q1'26","2026-01-01"],["Q2'26","2026-04-01"],["Q3'26","2026-07-01"],["Q4'26","2026-10-01"]];
+const ql=document.getElementById("ql");
+Q.forEach(([l])=>{const e=document.createElement("div");e.className="ql";e.textContent=l;ql.appendChild(e)});
 
-const quarters = [
-  ["Q1'26","2026-01-01"],["Q2'26","2026-04-01"],
-  ["Q3'26","2026-07-01"],["Q4'26","2026-10-01"]
-];
-const headerEl = document.getElementById("timeline-header");
-quarters.forEach(([label]) => {
-  const el = document.createElement("div");
-  el.className = "quarter-label"; el.textContent = label;
-  headerEl.appendChild(el);
+const g=document.getElementById("grid");
+
+// Collect bar containers for grid lines + today line
+const barContainers=[];
+
+DATA.forEach(item=>{
+  if(item.name==="sep"){const s=document.createElement("div");s.className="sep";g.appendChild(s);return}
+  const lbl=document.createElement("div");
+  lbl.className="lbl"+(item.parent?" p":"")+(item.child?" c":"");
+  lbl.textContent=item.name;
+  g.appendChild(lbl);
+
+  const bars=document.createElement("div");
+  bars.className="bars"+(item.parent?" p":"");
+  bars.style.position="relative";
+
+  const l=p(item.start),r=p(item.end),w=r-l;
+  const bar=document.createElement("div");bar.className="bar";
+  bar.style.left=l+"%";bar.style.width=w+"%";
+  bar.onclick=()=>window.open(item.jira,"_blank");
+
+  const fill=document.createElement("div");fill.className="fill";
+  fill.style.width=item.pct+"%";fill.style.background=C[item.cat];
+  fill.style.opacity=item.child?"0.7":"1";
+  bar.appendChild(fill);
+
+  const pct=document.createElement("div");pct.className="pct";
+  pct.textContent=item.pct+"%";bar.appendChild(pct);
+
+  const tip=document.createElement("div");tip.className="tip";
+  tip.innerHTML='<div class="t">'+item.name+'</div><div class="s">'+item.status+'</div><div class="l">Click to open in Jira &#8599;</div>';
+  bar.appendChild(tip);
+
+  bars.appendChild(bar);
+  g.appendChild(bars);
+  barContainers.push(bars);
 });
 
-const chart = document.getElementById("chart");
-chart.style.position = "relative";
-
-quarters.forEach(([, d]) => {
-  const line = document.createElement("div");
-  line.className = "quarter-grid";
-  line.style.left = "calc(280px + (100% - 280px) * " + (dateToPct(d)/100) + ")";
-  chart.appendChild(line);
-});
-
-const today = new Date();
-const todayPct = dateToPct(today.toISOString().slice(0,10));
-const todayEl = document.createElement("div");
-todayEl.style.cssText = "position:absolute;top:0;bottom:0;left:calc(280px + (100% - 280px) * "+(todayPct/100)+");z-index:20;";
-todayEl.innerHTML = '<div class="today-line" style="position:absolute;top:0;bottom:0;width:2px;background:#EF4444;opacity:0.7"></div><div class="today-label">TODAY</div>';
-chart.appendChild(todayEl);
-
-DATA.forEach(item => {
-  if (item.name === "sep") {
-    const sep = document.createElement("div"); sep.className = "separator"; chart.appendChild(sep); return;
-  }
-  const row = document.createElement("div");
-  row.className = "row" + (item.parent ? " parent" : "");
-  const label = document.createElement("div"); label.className = "label";
-  label.textContent = item.child ? "  " + item.name : item.name;
-  row.appendChild(label);
-  const barArea = document.createElement("div"); barArea.className = "bar-area";
-  const leftPct = dateToPct(item.start), rightPct = dateToPct(item.end);
-  const widthPct = rightPct - leftPct;
-  const barBg = document.createElement("div"); barBg.className = "bar-bg";
-  barBg.style.left = leftPct+"%"; barBg.style.width = widthPct+"%";
-  barBg.onclick = () => window.open(item.jira, "_blank");
-  const barFill = document.createElement("div"); barFill.className = "bar-fill";
-  barFill.style.width = item.pct+"%"; barFill.style.background = COLORS[item.cat];
-  barFill.style.opacity = item.child ? "0.75" : "1";
-  barBg.appendChild(barFill);
-  const pctLabel = document.createElement("div"); pctLabel.className = "bar-pct";
-  pctLabel.textContent = item.pct+"%"; barBg.appendChild(pctLabel);
-  const tooltip = document.createElement("div"); tooltip.className = "bar-tooltip";
-  tooltip.innerHTML = '<div class="tt-title">'+item.name+'</div><div class="tt-status">'+item.status+'</div><div class="tt-link">Click to open in Jira &#8599;</div>';
-  barBg.appendChild(tooltip);
-  barArea.appendChild(barBg); row.appendChild(barArea); chart.appendChild(row);
-});
+// Add quarter grid lines and today line to first bar container
+if(barContainers.length>0){
+  const ref=barContainers[0].parentElement;
+  const wrapper=document.createElement("div");
+  wrapper.style.cssText="position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;grid-column:2;grid-row:2/-1";
+  Q.forEach(([,d])=>{const ln=document.createElement("div");ln.className="qline";ln.style.left=p(d)+"%";wrapper.appendChild(ln)});
+  const tp=p(new Date().toISOString().slice(0,10));
+  const tl=document.createElement("div");tl.className="tline";tl.style.left=tp+"%";wrapper.appendChild(tl);
+  const tlbl=document.createElement("div");tlbl.className="tlbl";tlbl.style.left=tp+"%";tlbl.textContent="TODAY";wrapper.appendChild(tlbl);
+  ref.style.position="relative";ref.appendChild(wrapper);
+}
 </script>
 </body>
 </html>
