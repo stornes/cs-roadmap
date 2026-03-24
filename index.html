@@ -32,8 +32,8 @@
   .bar:hover .tip{display:block}
   .sep{grid-column:1/-1;height:1px;background:#1E293B;margin:3px 0}
   .qline{position:absolute;top:0;bottom:0;width:1px;background:#1E293B;z-index:1}
-  .tline{position:absolute;top:0;bottom:0;width:2px;background:#EF4444;z-index:20;opacity:.7}
-  .tlbl{position:absolute;top:-16px;transform:translateX(-50%);font-size:9px;font-weight:700;color:#EF4444}
+  .tline{position:absolute;top:0;bottom:0;width:3px;background:#EF4444;z-index:50;opacity:.9}
+  .tlbl{position:absolute;top:-16px;transform:translateX(-50%);font-size:9px;font-weight:700;color:#EF4444;z-index:50}
 </style>
 </head>
 <body>
@@ -118,7 +118,7 @@ DATA.forEach(item=>{
 if(barContainers.length>0){
   const ref=barContainers[0].parentElement;
   const wrapper=document.createElement("div");
-  wrapper.style.cssText="position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;grid-column:2;grid-row:2/-1";
+  wrapper.style.cssText="position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;grid-column:2;grid-row:2/-1;z-index:50";
   Q.forEach(([,d])=>{const ln=document.createElement("div");ln.className="qline";ln.style.left=p(d)+"%";wrapper.appendChild(ln)});
   const tp=p(new Date().toISOString().slice(0,10));
   const tl=document.createElement("div");tl.className="tline";tl.style.left=tp+"%";wrapper.appendChild(tl);
