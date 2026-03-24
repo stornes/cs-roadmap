@@ -117,16 +117,34 @@ DATA.forEach(item=>{
   barContainers.push(bars);
 });
 
-// Add quarter grid lines and today line to first bar container
+// Add quarter grid lines (behind bars, inside grid)
 if(barContainers.length>0){
   const ref=barContainers[0].parentElement;
-  const wrapper=document.createElement("div");
-  wrapper.style.cssText="position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;grid-column:2;grid-row:2/-1;z-index:50";
-  Q.forEach(([,d])=>{const ln=document.createElement("div");ln.className="qline";ln.style.left=p(d)+"%";wrapper.appendChild(ln)});
-  const tp=p(new Date().toISOString().slice(0,10));
-  const tl=document.createElement("div");tl.className="tline";tl.style.left=tp+"%";wrapper.appendChild(tl);
-  const tlbl=document.createElement("div");tlbl.className="tlbl";tlbl.style.left=tp+"%";tlbl.textContent="TODAY";wrapper.appendChild(tlbl);
-  ref.style.position="relative";ref.appendChild(wrapper);
+  const gridLines=document.createElement("div");
+  gridLines.style.cssText="position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;grid-column:2;grid-row:2/-1;z-index:0";
+  Q.forEach(([,d])=>{const ln=document.createElement("div");ln.className="qline";ln.style.left=p(d)+"%";gridLines.appendChild(ln)});
+  ref.style.position="relative";ref.appendChild(gridLines);
+}
+
+// TODAY line: separate overlay on top of everything
+{
+  const _d=new Date();
+  const todayStr=_d.getFullYear()+"-"+String(_d.getMonth()+1).padStart(2,"0")+"-"+String(_d.getDate()).padStart(2,"0");
+  const tp=p(todayStr);
+  const g=document.getElementById("grid");
+  const rect=g.getBoundingClientRect();
+  // Get the bar area left offset (200px label column)
+  const labelW=200;
+  const barW=g.offsetWidth-labelW;
+  const leftPx=labelW+(barW*tp/100);
+  const overlay=document.createElement("div");
+  overlay.style.cssText="position:absolute;top:"+g.offsetTop+"px;left:"+leftPx+"px;width:3px;height:"+g.offsetHeight+"px;background:#EF4444;opacity:0.9;z-index:9999;pointer-events:none";
+  const lbl=document.createElement("div");
+  lbl.style.cssText="position:absolute;top:"+(g.offsetTop-16)+"px;left:"+(leftPx-15)+"px;font-size:9px;font-weight:700;color:#EF4444;z-index:9999;pointer-events:none";
+  lbl.textContent="TODAY";
+  document.body.style.position="relative";
+  document.body.appendChild(overlay);
+  document.body.appendChild(lbl);
 }
 </script>
 </body>
