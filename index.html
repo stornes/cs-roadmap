@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>Commercial Systems Roadmap 2026</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
@@ -35,8 +32,6 @@
   .bar:hover .tip{display:block}
   .sep{grid-column:1/-1;height:1px;background:#1E293B;margin:3px 0}
   .qline{position:absolute;top:0;bottom:0;width:1px;background:#1E293B;z-index:1}
-  .tline{position:absolute;top:0;bottom:0;width:3px;background:#EF4444;z-index:50;opacity:.9}
-  .tlbl{position:absolute;top:-16px;transform:translateX(-50%);font-size:9px;font-weight:700;color:#EF4444;z-index:50}
 </style>
 </head>
 <body>
@@ -81,9 +76,6 @@ Q.forEach(([l])=>{const e=document.createElement("div");e.className="ql";e.textC
 
 const g=document.getElementById("grid");
 
-// Collect bar containers for grid lines + today line
-const barContainers=[];
-
 DATA.forEach(item=>{
   if(item.name==="sep"){const s=document.createElement("div");s.className="sep";g.appendChild(s);return}
   const lbl=document.createElement("div");
@@ -114,36 +106,27 @@ DATA.forEach(item=>{
 
   bars.appendChild(bar);
   g.appendChild(bars);
-  barContainers.push(bars);
 });
 
-// Add quarter grid lines (behind bars, inside grid)
-if(barContainers.length>0){
-  const ref=barContainers[0].parentElement;
-  const gridLines=document.createElement("div");
-  gridLines.style.cssText="position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;grid-column:2;grid-row:2/-1;z-index:0";
-  Q.forEach(([,d])=>{const ln=document.createElement("div");ln.className="qline";ln.style.left=p(d)+"%";gridLines.appendChild(ln)});
-  ref.style.position="relative";ref.appendChild(gridLines);
-}
+// Quarter grid lines (behind bars)
+const gl=document.createElement("div");
+gl.style.cssText="position:absolute;top:0;bottom:0;left:0;right:0;pointer-events:none;grid-column:2;grid-row:2/-1;z-index:0";
+Q.forEach(([,d])=>{const ln=document.createElement("div");ln.className="qline";ln.style.left=p(d)+"%";gl.appendChild(ln)});
+g.appendChild(gl);
 
-// TODAY line: separate overlay on top of everything
+// TODAY line (body-level overlay, always on top)
 {
   const _d=new Date();
-  const todayStr=_d.getFullYear()+"-"+String(_d.getMonth()+1).padStart(2,"0")+"-"+String(_d.getDate()).padStart(2,"0");
-  const tp=p(todayStr);
-  const g=document.getElementById("grid");
-  const rect=g.getBoundingClientRect();
-  // Get the bar area left offset (200px label column)
-  const labelW=200;
-  const barW=g.offsetWidth-labelW;
-  const leftPx=labelW+(barW*tp/100);
-  const overlay=document.createElement("div");
-  overlay.style.cssText="position:absolute;top:"+g.offsetTop+"px;left:"+leftPx+"px;width:3px;height:"+g.offsetHeight+"px;background:#EF4444;opacity:0.9;z-index:9999;pointer-events:none";
-  const lbl=document.createElement("div");
-  lbl.style.cssText="position:absolute;top:"+(g.offsetTop-16)+"px;left:"+(leftPx-15)+"px;font-size:9px;font-weight:700;color:#EF4444;z-index:9999;pointer-events:none";
-  lbl.textContent="TODAY";
+  const ts=_d.getFullYear()+"-"+String(_d.getMonth()+1).padStart(2,"0")+"-"+String(_d.getDate()).padStart(2,"0");
+  const tp=p(ts);
+  const lw=200, bw=g.offsetWidth-lw, lx=lw+(bw*tp/100);
   document.body.style.position="relative";
-  document.body.appendChild(overlay);
+  const line=document.createElement("div");
+  line.style.cssText="position:absolute;top:"+g.offsetTop+"px;left:"+lx+"px;width:3px;height:"+g.offsetHeight+"px;background:#EF4444;opacity:0.9;z-index:9999;pointer-events:none";
+  document.body.appendChild(line);
+  const lbl=document.createElement("div");
+  lbl.style.cssText="position:absolute;top:"+(g.offsetTop-16)+"px;left:"+(lx-15)+"px;font-size:9px;font-weight:700;color:#EF4444;z-index:9999;pointer-events:none";
+  lbl.textContent="TODAY";
   document.body.appendChild(lbl);
 }
 </script>
