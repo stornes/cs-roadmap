@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commercial Systems Roadmap 2026</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0F172A;
+    color: #E2E8F0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    padding: 32px 40px;
+    min-height: 100vh;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .header .subtitle {
+    color: #64748B;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #94A3B8;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+  .timeline-header {
+    display: flex;
+    margin-left: 280px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .quarter-label {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-left: 1px solid #1E293B;
+    padding-left: 8px;
+  }
+  .chart {
+    position: relative;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    position: relative;
+  }
+  .row.parent { height: 42px; }
+  .row.parent .label { font-weight: 700; font-size: 14px; color: #E2E8F0; }
+  .row:not(.parent) .label { color: #94A3B8; font-size: 13px; padding-left: 16px; }
+  .label {
+    width: 280px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-right: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bar-area {
+    flex: 1;
+    position: relative;
+    height: 26px;
+  }
+  .row.parent .bar-area { height: 30px; }
+  .bar-bg {
+    position: absolute;
+    height: 100%;
+    background: #1E293B;
+    border-radius: 4px;
+    border: 1px solid #334155;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .bar-bg:hover {
+    border-color: #475569;
+    transform: scaleY(1.08);
+    z-index: 10;
+  }
+  .bar-fill {
+    position: absolute;
+    height: 100%;
+    border-radius: 4px 0 0 4px;
+    pointer-events: none;
+    transition: width 0.6s ease;
+  }
+  .bar-pct {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .bar-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1E293B;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #CBD5E1;
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    pointer-events: none;
+  }
+  .bar-tooltip .tt-title { font-weight: 700; color: #E2E8F0; font-size: 13px; }
+  .bar-tooltip .tt-status { margin-top: 4px; }
+  .bar-tooltip .tt-link { color: #60A5FA; margin-top: 4px; }
+  .bar-bg:hover .bar-tooltip { display: block; }
+  .today-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #EF4444;
+    z-index: 20;
+    opacity: 0.7;
+  }
+  .today-label {
+    position: absolute;
+    top: -20px;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    color: #EF4444;
+    letter-spacing: 0.5px;
+  }
+  .quarter-grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #1E293B;
+    z-index: 1;
+  }
+  .separator {
+    height: 1px;
+    background: #1E293B;
+    margin: 4px 0 4px 280px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Commercial Systems Roadmap 2026</h1>
+  <div class="subtitle" id="subtitle"></div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#3B82F6"></div>Salesforce</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6"></div>Booking Core</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#10B981"></div>Infrastructure</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#F59E0B"></div>Finance</div>
+</div>
+
+<div class="timeline-header" id="timeline-header"></div>
+<div class="chart" id="chart"></div>
+
+<script>
+const DATA = [
+  { name: "SF Lighthouse", start: "2025-05-05", end: "2026-07-31", pct: 28, cat: "sf", parent: true,
+    jira: "https://hurtigruten.atlassian.net/browse/SQSF-5305",
+    status: "3 workstreams, avg 28%. Voice 31%, Calabrio 40%, Omnichannel 12%" },
+  { name: "Omnichannel", start: "2025-05-05", end: "2026-07-31", pct: 12, cat: "sf", child: true,
+    jira: "https://hurtigruten.atlassian.net/browse/SQSF-5305",
+    status: "5/41 done. 16 In Dev, 9 To Do, 7 Grooming" },
+  { name: "SF Voice / Amazon Connect", start: "2026-02-18", end: "2026-06-01", pct: 31, cat: "sf", child: true,
+    jira: "https://hurtigruten.atlassian.net/browse/SQSF-6000",
+    status: "10/32 done. 7 in progress, 15 to do" },
+  { name: "Calabrio WFM", start: "2026-02-06", end: "2026-06-01", pct: 40, cat: "sf", child: true,
+    jira: "https://hurtigruten.atlassian.net/browse/SQSF-5951",
+    status: "2/5 done. Waiting for 3rd party on 1" },
+  { name: "sep" },
+  { name: "PG Core & Platform", start: "2026-03-12", end: "2026-06-19", pct: 0, cat: "core", parent: true,
+    jira: "https://hurtigruten.atlassian.net/jira/software/projects/AV/boards/401",
+    status: "2 workstreams, avg 0%. Partner API 50%, Account Read Model 0%" },
+  { name: "Partner API 2026.2", start: "2026-03-12", end: "2026-04-13", pct: 50, cat: "core", child: true,
+    jira: "https://hurtigruten.atlassian.net/browse/AV-2324",
+    status: "4/8 done. Booking extras and offers. 2 in dev, 1 staging" },
+  { name: "Account Read Model (SF|PG)", start: "2026-03-12", end: "2026-05-10", pct: 0, cat: "core", child: true,
+    jira: "https://hurtigruten.atlassian.net/browse/AV-2325",
+    status: "0/4 done. SF consumes customer events from PG" },
+  { name: "New Payment Methods", start: "2026-03-12", end: "2026-06-19", pct: 0, cat: "core", child: true,
+    jira: "https://hurtigruten.atlassian.net/browse/AV-2328",
+    status: "0/2 done. Vipps and Apple Pay support" },
+  { name: "sep" },
+  { name: "PG Client Local Install", start: "2025-11-28", end: "2026-04-15", pct: 82, cat: "infra",
+    jira: "https://hurtigruten.atlassian.net/browse/PC-3731",
+    status: "14/17 done. Migrating from Citrix to local workstations" },
+  { name: "Migrate Seaware to Cloud", start: "2026-01-22", end: "2026-12-31", pct: 51, cat: "infra",
+    jira: "https://hurtigruten.atlassian.net/browse/INFRA-2468",
+    status: "20/39 done. OCI improvements and stage prep" },
+  { name: "sep" },
+  { name: "VAT Compliance (all markets)", start: "2026-03-12", end: "2026-07-01", pct: 13, cat: "fin",
+    jira: "https://hurtigruten.atlassian.net/browse/PC-3888",
+    status: "2/15 done. 1 blocked. DNB exchange rates, tax rules" },
+];
+
+const COLORS = { sf: "#3B82F6", core: "#8B5CF6", infra: "#10B981", fin: "#F59E0B" };
+const RANGE_START = new Date("2025-04-01");
+const RANGE_END = new Date("2027-01-01");
+const TOTAL_MS = RANGE_END - RANGE_START;
+
+function dateToPct(d) {
+  return ((new Date(d) - RANGE_START) / TOTAL_MS) * 100;
+}
+
+// Subtitle
+const today = new Date();
+document.getElementById("subtitle").textContent =
+  `Updated ${today.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`;
+
+// Quarter headers
+const quarters = [
+  ["Q2'25","2025-04-01"],["Q3'25","2025-07-01"],["Q4'25","2025-10-01"],
+  ["Q1'26","2026-01-01"],["Q2'26","2026-04-01"],["Q3'26","2026-07-01"],["Q4'26","2026-10-01"]
+];
+const headerEl = document.getElementById("timeline-header");
+quarters.forEach(([label]) => {
+  const el = document.createElement("div");
+  el.className = "quarter-label";
+  el.textContent = label;
+  headerEl.appendChild(el);
+});
+
+// Chart
+const chart = document.getElementById("chart");
+
+// Quarter grid lines (absolute positioned within chart)
+function addGridLines() {
+  quarters.forEach(([, d]) => {
+    const line = document.createElement("div");
+    line.className = "quarter-grid";
+    line.style.left = `calc(280px + (100% - 280px) * ${dateToPct(d) / 100})`;
+    chart.appendChild(line);
+  });
+}
+
+// Today line
+function addTodayLine() {
+  const pct = dateToPct(today.toISOString().slice(0, 10));
+  const container = document.createElement("div");
+  container.style.cssText = `position:absolute;top:0;bottom:0;left:calc(280px + (100% - 280px) * ${pct / 100});z-index:20;`;
+  container.innerHTML = `
+    <div class="today-line" style="position:absolute;top:0;bottom:0;width:2px;background:#EF4444;opacity:0.7"></div>
+    <div class="today-label">TODAY</div>`;
+  chart.appendChild(container);
+}
+
+// Render rows
+DATA.forEach(item => {
+  if (item.name === "sep") {
+    const sep = document.createElement("div");
+    sep.className = "separator";
+    chart.appendChild(sep);
+    return;
+  }
+
+  const row = document.createElement("div");
+  row.className = `row${item.parent ? " parent" : ""}`;
+
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = item.child ? `  ${item.name}` : item.name;
+  row.appendChild(label);
+
+  const barArea = document.createElement("div");
+  barArea.className = "bar-area";
+
+  const leftPct = dateToPct(item.start);
+  const rightPct = dateToPct(item.end);
+  const widthPct = rightPct - leftPct;
+
+  const barBg = document.createElement("div");
+  barBg.className = "bar-bg";
+  barBg.style.left = `${leftPct}%`;
+  barBg.style.width = `${widthPct}%`;
+  barBg.onclick = () => window.open(item.jira, "_blank");
+
+  const barFill = document.createElement("div");
+  barFill.className = "bar-fill";
+  barFill.style.width = `${item.pct}%`;
+  barFill.style.background = COLORS[item.cat];
+  barFill.style.opacity = item.child ? "0.75" : "1";
+  barBg.appendChild(barFill);
+
+  const pctLabel = document.createElement("div");
+  pctLabel.className = "bar-pct";
+  pctLabel.textContent = `${item.pct}%`;
+  barBg.appendChild(pctLabel);
+
+  // Tooltip
+  const tooltip = document.createElement("div");
+  tooltip.className = "bar-tooltip";
+  tooltip.innerHTML = `
+    <div class="tt-title">${item.name}</div>
+    <div class="tt-status">${item.status}</div>
+    <div class="tt-link">Click to open in Jira &#8599;</div>`;
+  barBg.appendChild(tooltip);
+
+  barArea.appendChild(barBg);
+  row.appendChild(barArea);
+  chart.appendChild(row);
+});
+
+addGridLines();
+addTodayLine();
+
+// Make chart position relative for absolute children
+chart.style.position = "relative";
+</script>
+</body>
+</html>
