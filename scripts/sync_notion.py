@@ -86,8 +86,20 @@ def map_rag_status(fs_status, has_conflict=False):
     
     if "committed" in st or "in h2" in st:
         return "On track"
-    
     return "Not Started"
+
+# Determine quarters from start and end dates
+def get_quarters_from_dates(start_date, end_date):
+    if not start_date or not end_date:
+        return []
+    quarters = []
+    # Q3 2026: 2026-07-01 to 2026-09-30
+    if start_date <= "2026-09-30" and end_date >= "2026-07-01":
+        quarters.append("Q3 2026")
+    # Q4 2026: 2026-10-01 to 2026-12-31
+    if start_date <= "2026-12-31" and end_date >= "2026-10-01":
+        quarters.append("Q4 2026")
+    return quarters
 
 # Check if a capacity sync comment already exists on the Notion page
 def check_comment_exists(page_id, headers):
@@ -330,6 +342,12 @@ def run_sync(dry_run=False, only_id=None):
             }
         }
         
+        # Add Quarter multi_select based on computed dates
+        quarters = get_quarters_from_dates(start_date, end_date)
+        properties["Quarter"] = {
+            "multi_select": [{"name": q} for q in quarters]
+        }
+        
         if start_date:
             properties["Timeline"] = {
                 "date": {
@@ -364,6 +382,7 @@ def run_sync(dry_run=False, only_id=None):
             print(f"Syncing local {fs_init_id} ({fs_init['name']}) -> Notion Page {notion_page_id}:")
             print(f"  RAG: {notion_rag}")
             print(f"  Timeline: {start_date} to {end_date}")
+            print(f"  Quarter: {', '.join(quarters)}")
             print(f"  Description: {parsed_conf['description'][:60]}...")
             print(f"  Delivery (Deliveries): {parsed_conf['deliveries'][:60]}...")
             print(f"  Expected impact (OKRs):\n{parsed_conf['success']}")
@@ -371,6 +390,7 @@ def run_sync(dry_run=False, only_id=None):
             print(f"Syncing local {fs_init_id} ({fs_init['name']}) -> Notion Page {notion_page_id} (No Confluence match found):")
             print(f"  RAG: {notion_rag}")
             print(f"  Timeline: {start_date} to {end_date}")
+            print(f"  Quarter: {', '.join(quarters)}")
             
         # Handle Warning Comment
         comment_text = get_sync_comment(fs_init_id, fs_init, has_conflict)
