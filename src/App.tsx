@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { 
   collection, 
@@ -51,6 +51,28 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [realityTreeKind, setRealityTreeKind] = useState<'CRT' | 'FRT'>('CRT');
   const [isCopilotOpen, setIsCopilotOpen] = useState(true);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  // Reset viewport scroll on tab switch
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0;
+    }
+  }, [activeTab]);
+
+  // Synchronize URL hash with activeTab
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#/', '').replace('#', '');
+      const validTabs = ['overview', 'streams', 'critical-path', 'roadmap', 'backlog', 'capacity', 'swimlanes', 'conflicts', 'trees', 'documents', 'logs'];
+      if (hash && validTabs.includes(hash)) {
+        setActiveTab(hash);
+      }
+    };
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Conflict creation state
   const [newConflictTitle, setNewConflictTitle] = useState('');
@@ -375,13 +397,16 @@ export default function App() {
               { id: 'conflicts', label: 'Conflicts' },
               { id: 'trees', label: 'Reality Trees' },
               { id: 'documents', label: 'Documents' },
-              { id: 'logs', label: 'Profile' }
+              { id: 'logs', label: 'Audit Logs' }
             ].map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    window.location.hash = `#/${tab.id}`;
+                  }}
                   className={`h-full px-1 flex items-center text-sm font-medium transition-all relative cursor-pointer ${
                     isActive 
                       ? 'text-blue-600 font-semibold' 
@@ -430,7 +455,7 @@ export default function App() {
       {/* Main Workspace Area */}
       <div className="flex-1 flex overflow-hidden min-h-0 relative">
         {/* Active Panel */}
-        <main className="flex-1 p-8 overflow-y-auto min-h-0 relative">
+        <main ref={mainRef} className="flex-1 p-8 overflow-y-auto min-h-0 relative">
             {activeTab === 'overview' && (
               <div className="space-y-8 max-w-5xl">
                 {/* Cycle Meta Header */}
