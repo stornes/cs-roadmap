@@ -440,6 +440,11 @@ def run_sync(dry_run=False, only_id=None):
         "H2-09": "Existing",
         "H2-22": "Existing",
         "H2-24": "New",
+        "B2X": "New",
+        "H2-03": "New",
+        "H2-04": "New",
+        "H2-05": "New",
+        "WS3": "New",
     }
     
     # User confirmed team assignments to avoid auto-calculation or guessing
@@ -459,6 +464,11 @@ def run_sync(dry_run=False, only_id=None):
         "H2-09": ["SF Sales & Service Operations"],
         "H2-22": ["Backend Team"],
         "H2-24": ["Backend Team"],
+        "B2X": ["Backend Team"],
+        "H2-03": ["Backend Team"],
+        "H2-04": ["Backend Team"],
+        "H2-05": ["Backend Team"],
+        "WS3": ["Backend Team"],
     }
     
     # 2. Fetch Firestore initiatives and conflicts
@@ -536,8 +546,9 @@ def run_sync(dry_run=False, only_id=None):
             continue
             
         if critical_ids and fs_init_id not in critical_ids:
-            print(f"Skipping {fs_init_id} - not in Critical Path scope.")
-            continue
+            if not (only_id and fs_init_id == only_id):
+                print(f"Skipping {fs_init_id} - not in Critical Path scope.")
+                continue
             
         if fs_init_id not in fs_inits:
             print(f"Warning: Mapped Firestore ID {fs_init_id} not found in Firestore.")
