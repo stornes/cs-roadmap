@@ -581,7 +581,11 @@ export default function App() {
                               <div className="w-full bg-gray-900 rounded-full h-2 overflow-hidden border border-white/5">
                                 <div 
                                   className={`h-full rounded-full transition-all duration-350 ${
-                                    isOver ? 'bg-rose-500 shadow-sm shadow-rose-500/50' : 'bg-brand-purple'
+                                    isOver 
+                                      ? 'bg-rose-500 shadow-sm shadow-rose-500/50' 
+                                      : pct >= 90 
+                                        ? 'bg-amber-500 shadow-sm shadow-amber-500/50' 
+                                        : 'bg-emerald-500 shadow-sm shadow-emerald-500/50'
                                   }`} 
                                   style={{ width: `${pct}%` }} 
                                 />
@@ -779,6 +783,7 @@ export default function App() {
                           const cap = stream.capacityByMonth[m] || 0;
                           const util = recomputeData.utilisation[stream.id]?.[m] || 0;
                           const excess = cap - util;
+                          const pct = cap > 0 ? Math.min(100, Math.round((util / cap) * 100)) : 0;
                           const isOver = excess < 0;
 
                           return (
@@ -786,7 +791,9 @@ export default function App() {
                               <div className={`mx-auto w-24 py-2 px-1 rounded-xl border flex flex-col items-center ${
                                 isOver 
                                   ? 'bg-rose-950/20 border-rose-500/40 text-rose-300 font-bold' 
-                                  : 'bg-emerald-950/10 border-emerald-500/10 text-emerald-300'
+                                  : pct >= 90
+                                    ? 'bg-amber-950/20 border-amber-500/30 text-amber-300 font-semibold'
+                                    : 'bg-emerald-950/10 border-emerald-500/10 text-emerald-300'
                               }`}>
                                 <span className="text-xs">{util.toFixed(1)} / {cap.toFixed(1)}</span>
                                 <span className="text-[10px] opacity-75 mt-0.5">
