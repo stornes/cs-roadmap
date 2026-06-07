@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -135,6 +136,121 @@ def get_sync_comment(fs_init_id, fs_init, has_conflict):
         )
     return None
 
+# Load and parse Confluence page rows
+def get_confluence_rows():
+    cache_path = "scripts/confluence_backlog.json"
+    if not os.path.exists(cache_path):
+        print(f"Warning: Confluence cache file {cache_path} not found.")
+        return []
+        
+    with open(cache_path, "r") as f:
+        data = json.load(f)
+        
+    body_content = data.get("body", "")
+    raw_rows = []
+    current_row = []
+    
+    for line in body_content.splitlines():
+        trimmed = line.strip()
+        if not trimmed:
+            continue
+        if trimmed.startswith("|") and ("---" in trimmed or "ID" in trimmed):
+            continue
+        if trimmed.startswith("|") and re.match(r'^\|\s*CS-', trimmed):
+            if current_row:
+                raw_rows.append(" ".join(current_row))
+            current_row = [trimmed]
+        else:
+            if current_row:
+                current_row.append(trimmed)
+                
+    if current_row:
+        raw_rows.append(" ".join(current_row))
+        
+    parsed_rows = []
+    for r in raw_rows:
+        parts = [p.strip() for p in r.split("|")]
+        if parts[0] == '':
+            parts = parts[1:]
+        if parts[-1] == '':
+            parts = parts[:-1]
+        if len(parts) >= 10:
+            parsed_rows.append(parts)
+    return parsed_rows
+
+# Parse Confluence description column
+def parse_confluence_desc_col(text):
+    text = re.sub(r'\s+', ' ', text)
+    
+    # Description
+    desc_match = re.search(r'\*\*Description:\*\*(.*?)(?=\*\*Deliveries:\*\*|\*\*Teams:\*\*|\*\*Goal:\*\*|\*\*Success:\*\*|$)', text)
+    description = desc_match.group(1).strip() if desc_match else ""
+    
+    # Deliveries
+    deliveries_match = re.search(r'\*\*Deliveries:\*\*(.*?)(?=\*\*Teams:\*\*|\*\*Goal:\*\*|\*\*Success:\*\*|$)', text)
+    deliveries = deliveries_match.group(1).strip() if deliveries_match else ""
+    
+    # Success (OKRs)
+    success_match = re.search(r'\*\*Success:\*\*(.*?)$', text)
+    success = success_match.group(1).strip() if success_match else ""
+    
+    # Format success as 3 Key Results
+    key_results = []
+    if success:
+        delimiters = [";", ","]
+        parts = []
+        for delim in delimiters:
+            temp_parts = [p.strip() for p in success.split(delim) if p.strip()]
+            if len(temp_parts) >= 2:
+                parts = temp_parts
+                break
+        if not parts:
+            parts = [success]
+            
+        for i, part in enumerate(parts[:3]):
+            clean_part = re.sub(r'^\d+[\.\)\s\-]+', '', part).strip()
+            if clean_part:
+                clean_part = clean_part[0].upper() + clean_part[1:]
+                key_results.append(f"{i+1}. {clean_part}")
+                
+    formatted_success = "\n".join(key_results) if key_results else success
+    
+    return {
+        "description": description,
+        "deliveries": deliveries,
+        "success": formatted_success
+    }
+
+# Match Firestore ID/Name to Confluence Row
+def match_firestore_to_confluence(fs_id, fs_name, confluence_rows):
+    # Try numeric match (e.g. H2-30 -> 30, CS-26-H2-30 -> 30)
+    fs_num_match = re.search(r'\d+$', fs_id)
+    if fs_num_match:
+        fs_num = int(fs_num_match.group(0))
+        for row in confluence_rows:
+            c_id = row[0]
+            c_num_match = re.search(r'\d+$', c_id)
+            if c_num_match:
+                c_num = int(c_num_match.group(0))
+                if c_num == fs_num:
+                    return row
+                    
+    # Fallback: String similarity
+    from difflib import SequenceMatcher
+    best_row = None
+    best_ratio = 0.0
+    for row in confluence_rows:
+        c_name = row[1]
+        ratio = SequenceMatcher(None, fs_name.lower(), c_name.lower()).ratio()
+        if ratio > best_ratio:
+            best_ratio = ratio
+            best_row = row
+            
+    if best_ratio > 0.6:
+        return best_row
+        
+    return None
+
 def run_sync(dry_run=False):
     print(f"Starting Notion Roadmap sync (Dry run = {dry_run})...")
     
@@ -150,13 +266,11 @@ def run_sync(dry_run=False):
         fs_inits[doc.id] = doc.to_dict()
         fs_inits[doc.id]["id"] = doc.id
     
-    # Check conflicts
     conflicts_docs = db.collection("conflicts").where("cycleId", "==", cycle_id).stream()
     conflict_inits = set()
     for doc in conflicts_docs:
         c = doc.to_dict()
         if c.get("status") == "active":
-            # If title or description contains conflict indicator
             title = c.get("title", "").lower()
             if "my account" in title or "h2-30" in title:
                 conflict_inits.add("H2-30")
@@ -165,7 +279,11 @@ def run_sync(dry_run=False):
     
     print(f"Loaded {len(fs_inits)} initiatives from Firestore.")
     
-    # 3. Synchronize mapped pages
+    # 3. Load Confluence rows
+    confluence_rows = get_confluence_rows()
+    print(f"Loaded {len(confluence_rows)} rows from Confluence cache.")
+    
+    # 4. Synchronize mapped pages
     updated_count = 0
     for notion_page_id, fs_init_id in mappings.items():
         if fs_init_id not in fs_inits:
@@ -198,10 +316,36 @@ def run_sync(dry_run=False):
         else:
             properties["Timeline"] = None
             
-        print(f"Syncing local {fs_init_id} ({fs_init['name']}) -> Notion Page {notion_page_id}:")
-        print(f"  RAG: {notion_rag}")
-        print(f"  Timeline: {start_date} to {end_date}")
-        
+        # Match with Confluence row to populate description/deliveries/OKRs
+        conf_row = match_firestore_to_confluence(fs_init_id, fs_init.get("name", ""), confluence_rows)
+        if conf_row:
+            parsed_conf = parse_confluence_desc_col(conf_row[5])
+            
+            # Add to Notion update payload
+            if parsed_conf["description"]:
+                properties["Description"] = {
+                    "rich_text": [{ "text": { "content": parsed_conf["description"] } }]
+                }
+            if parsed_conf["deliveries"]:
+                properties["Delivery"] = {
+                    "rich_text": [{ "text": { "content": parsed_conf["deliveries"] } }]
+                }
+            if parsed_conf["success"]:
+                properties["Expected impact"] = {
+                    "rich_text": [{ "text": { "content": parsed_conf["success"] } }]
+                }
+                
+            print(f"Syncing local {fs_init_id} ({fs_init['name']}) -> Notion Page {notion_page_id}:")
+            print(f"  RAG: {notion_rag}")
+            print(f"  Timeline: {start_date} to {end_date}")
+            print(f"  Description: {parsed_conf['description'][:60]}...")
+            print(f"  Delivery (Deliveries): {parsed_conf['deliveries'][:60]}...")
+            print(f"  Expected impact (OKRs):\n{parsed_conf['success']}")
+        else:
+            print(f"Syncing local {fs_init_id} ({fs_init['name']}) -> Notion Page {notion_page_id} (No Confluence match found):")
+            print(f"  RAG: {notion_rag}")
+            print(f"  Timeline: {start_date} to {end_date}")
+            
         # Handle Warning Comment
         comment_text = get_sync_comment(fs_init_id, fs_init, has_conflict)
         if comment_text:
