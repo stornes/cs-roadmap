@@ -896,7 +896,7 @@ export default function App() {
 
           {activeTab === 'trees' && (
             <div className="flex flex-col h-full gap-4 relative">
-              <div className="flex items-center justify-between pb-2">
+              <div className="flex items-center justify-between pb-2 relative z-30">
                 <div>
                   <h1 className="text-2xl font-display font-bold text-white">Reality Trees Canvas Diagram</h1>
                   <p className="text-sm text-gray-400 mt-1">
