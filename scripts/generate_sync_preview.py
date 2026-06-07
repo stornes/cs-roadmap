@@ -27,7 +27,7 @@ headers = {
 # Import helpers from sync_notion.py
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from sync_notion import parse_horizon, map_rag_status, cycle_id
+from sync_notion import parse_horizon, map_rag_status, cycle_id, get_critical_path_ids
 
 def generate_preview():
     # 1. Load mappings
@@ -85,7 +85,10 @@ def generate_preview():
     markdown_lines.append("| Notion Initiative | Mapped Local Initiative | Current RAG $\\rightarrow$ Proposed | Current Timeline $\\rightarrow$ Proposed |")
     markdown_lines.append("| :--- | :--- | :--- | :--- |")
     
+    critical_ids = get_critical_path_ids()
     for notion_page_id, fs_init_id in mappings.items():
+        if critical_ids and fs_init_id not in critical_ids:
+            continue
         if fs_init_id not in fs_inits:
             continue
         fs_init = fs_inits[fs_init_id]

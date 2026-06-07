@@ -250,8 +250,20 @@ def match_firestore_to_confluence(fs_id, fs_name, confluence_rows):
         return best_row
         
     return None
+# Load critical path IDs from src/components/CriticalPathTab.tsx
+def get_critical_path_ids():
+    tab_path = "src/components/CriticalPathTab.tsx"
+    if not os.path.exists(tab_path):
+        tab_path = "../src/components/CriticalPathTab.tsx"
+    if not os.path.exists(tab_path):
+        print("Warning: CriticalPathTab.tsx not found, not filtering by critical path.")
+        return None
+    with open(tab_path, "r") as f:
+        content = f.read()
+    ids = re.findall(r"id:\s*['\"]([^'\"]+)['\"]", content)
+    return set(ids)
 
-def run_sync(dry_run=False):
+def run_sync(dry_run=False, only_id=None):
     print(f"Starting Notion Roadmap sync (Dry run = {dry_run})...")
     
     # 1. Load mappings
@@ -283,9 +295,21 @@ def run_sync(dry_run=False):
     confluence_rows = get_confluence_rows()
     print(f"Loaded {len(confluence_rows)} rows from Confluence cache.")
     
+    # Load critical path IDs
+    critical_ids = get_critical_path_ids()
+    if critical_ids:
+        print(f"Loaded {len(critical_ids)} IDs from CriticalPathTab.tsx.")
+    
     # 4. Synchronize mapped pages
     updated_count = 0
     for notion_page_id, fs_init_id in mappings.items():
+        if only_id and fs_init_id != only_id:
+            continue
+            
+        if critical_ids and fs_init_id not in critical_ids:
+            print(f"Skipping {fs_init_id} - not in Critical Path scope.")
+            continue
+            
         if fs_init_id not in fs_inits:
             print(f"Warning: Mapped Firestore ID {fs_init_id} not found in Firestore.")
             continue
@@ -314,7 +338,9 @@ def run_sync(dry_run=False):
                 }
             }
         else:
-            properties["Timeline"] = None
+            properties["Timeline"] = {
+                "date": None
+            }
             
         # Match with Confluence row to populate description/deliveries/OKRs
         conf_row = match_firestore_to_confluence(fs_init_id, fs_init.get("name", ""), confluence_rows)
@@ -386,4 +412,10 @@ def run_sync(dry_run=False):
 if __name__ == "__main__":
     import sys
     dry = "--live" not in sys.argv
-    run_sync(dry_run=dry)
+    only_id = None
+    for arg in sys.argv:
+        if arg.startswith("--only="):
+            only_id = arg.split("=")[1]
+        elif arg == "--only" and sys.argv.index(arg) + 1 < len(sys.argv):
+            only_id = sys.argv[sys.argv.index(arg) + 1]
+    run_sync(dry_run=dry, only_id=only_id)
