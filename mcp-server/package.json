@@ -1,0 +1,25 @@
+{
+  "name": "hurtigruten-connectors-mcp",
+  "version": "1.0.0",
+  "description": "Unified MCP server for Atlassian Jira, Notion, and Slack",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.4.1",
+    "@notionhq/client": "^2.2.15",
+    "@slack/web-api": "^7.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  }
+}

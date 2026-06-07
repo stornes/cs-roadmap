@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Outfit", system-ui, sans-serif;
+  
+  --color-brand-purple: #a855f7;
+  --color-brand-blue: #3b82f6;
+  --color-brand-teal: #0d9488;
+  
+  --color-bg-dark: #070913;
+  --color-bg-panel: rgba(17, 24, 39, 0.6);
+  --color-border-glass: rgba(255, 255, 255, 0.06);
+}
+
+/* Custom global styles & animations */
+@utility glass {
+  background-color: var(--color-bg-panel);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-glass);
+}
+
+@utility glass-card {
+  background-color: rgba(31, 41, 55, 0.3);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+body {
+  background-color: var(--color-bg-dark);
+  font-family: var(--font-sans);
+  color: #f3f4f6;
+  overflow-x: hidden;
+}
+
+/* React Flow customizations */
+.react-flow__node {
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.react-flow__handle {
+  background: #374151 !important;
+  width: 8px !important;
+  height: 8px !important;
+  border: 2px solid #9ca3af !important;
+}
+
+.react-flow__edge-path {
+  stroke: #4b5563 !important;
+  stroke-width: 2 !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}

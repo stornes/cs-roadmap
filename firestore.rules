@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user belongs to domain
+    function isDomainUser() {
+      return request.auth == null || (
+        request.auth.token.keys().hasAll(['email']) == false ||
+        request.auth.token.email.matches('.*@hurtigruten\\.com$') ||
+        request.auth.token.email == 'stornes@gmail.com'
+      );
+    }
+
+    // Helper to check if user data exists
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // Helper to check if user has Editor or Admin role
+    function isEditorOrAdmin() {
+      return request.auth == null || (
+        isDomainUser() && (
+          getUserData().role == 'editor' || 
+          getUserData().role == 'admin'
+        )
+      );
+    }
+
+    // Helper to check if user is Admin
+    function isAdmin() {
+      return request.auth == null || (
+        isDomainUser() && getUserData().role == 'admin'
+      );
+    }
+
+    // User profiles collection
+    match /users/{userId} {
+      allow read: if isDomainUser();
+      // Allow user to create their own profile as viewer, or admin if setting email to stornes@gmail.com, or if unauthenticated
+      allow create: if (request.auth == null) || (
+        isDomainUser() && request.auth.uid == userId && (
+          request.resource.data.role == 'viewer' ||
+          request.resource.data.email == 'stornes@gmail.com'
+        )
+      );
+      // Only admin can update profiles (roles/status)
+      allow update, delete: if isAdmin();
+    }
+
+    // Cycles collection
+    match /cycles/{cycleId} {
+      allow read: if isDomainUser();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Other collections scoped to cycles
+    match /streams/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /people/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /capacity/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /initiatives/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /dependencies/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /allocations/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /conflicts/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /milestones/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /trees/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /tree_nodes/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /tree_edges/{id} { allow read: if isDomainUser(); allow write: if isEditorOrAdmin(); }
+    match /audit_logs/{id} {
+      allow read: if isDomainUser();
+      allow create: if isDomainUser(); // Anyone can append audit logs
+      allow update, delete: if false; // Audit logs are immutable
+    }
+  }
+}

@@ -1,0 +1,1245 @@
+{
+  "meta": {
+    "cycle": "2026-H2",
+    "title": "Customer Systems Roadmap H2 2026",
+    "built": "2026-06-06",
+    "owner": "Sverre Stornes",
+    "maintainedBy": "Program Coordinator (PMO)",
+    "principle": "Capacity counts delivery ICs only; chapter leads and PO sit on top.",
+    "schemaVersion": "1.0",
+    "assumptions": [
+      "July is Norwegian holiday — no delivery activity. The plan runs Aug–Dec 2026.",
+      "Dedupe moved to October (ARM finishes September) so ARM and Dedupe no longer both land on Miranda; critical-path end date unchanged. Stream A utilisation re-flowed one month right. Streams B and C show July as holiday; their displaced July load compresses into Aug–Oct and must be re-planned with the leads (Partner API on Jyhe, Melbourne, may be the exception)."
+    ]
+  },
+  "streams": [
+    {
+      "id": "A",
+      "name": "SF Sales & Service Operations",
+      "lead": "Sille Antonsen",
+      "leadOnTop": [
+        "Sille Antonsen (PO)",
+        "Alexander Røstum (chapter lead)"
+      ],
+      "deliveryICs": [
+        "Pawel",
+        "Nataša",
+        "Miranda",
+        "Arthur"
+      ],
+      "capacityByMonth": {
+        "Jul": 0.0,
+        "Aug": 1.8,
+        "Sep": 2.4,
+        "Oct": 2.4,
+        "Nov": 2.4,
+        "Dec": 2.4
+      },
+      "baUFloorByMonth": {
+        "Jul": 0.6,
+        "Aug": 0.6,
+        "Sep": 0.8,
+        "Oct": 0.8,
+        "Nov": 0.8,
+        "Dec": 0.8
+      },
+      "position": "Three commitments only: ARM, Dedupe, Lighthouse Ph2. 40% BaU+OnCall floor. Rest negotiable.",
+      "holidayMonths": [
+        "Jul"
+      ]
+    },
+    {
+      "id": "B",
+      "name": "SF Marketing & Analytics Operations & Enablement",
+      "lead": "Kev Gaisford",
+      "leadOnTop": [
+        "Kev Gaisford (lead — no direct reports in org)",
+        "Alexander Røstum (chapter lead)"
+      ],
+      "deliveryICs": [
+        "Guljar",
+        "Ismail"
+      ],
+      "capacityByMonth": {
+        "Jul": 0.0,
+        "Aug": 3.0,
+        "Sep": 3.0,
+        "Oct": 3.0,
+        "Nov": 3.0,
+        "Dec": 3.0
+      },
+      "baUFloorByMonth": {
+        "Jul": 0.5,
+        "Aug": 0.5,
+        "Sep": 0.5,
+        "Oct": 0.5,
+        "Nov": 0.5,
+        "Dec": 0.5
+      },
+      "position": "Workload capped at 3 FTE/mo (Kev + Guljar + Ismail) — now within capacity. Consent, Preference Centre, AirPort Express and Voice of Customer de-prioritised to 2027 to fit. A dedicated Data Engineer would restore that scope.",
+      "holidayMonths": [
+        "Jul"
+      ]
+    },
+    {
+      "id": "C",
+      "name": "Booking Solutions (incl. Platform)",
+      "lead": "Jonas Roineslien",
+      "leadOnTop": [
+        "Jonas Roineslien (Platform lead)",
+        "Kato Griff Klaeboe (Backend chapter lead)"
+      ],
+      "deliveryICs": [
+        "Jyhe",
+        "Lasse",
+        "Erik",
+        "Darren",
+        "Halvor",
+        "Ove (50%)",
+        "Sylwester",
+        "Øyvind",
+        "Kirill (QA)"
+      ],
+      "capacityByMonth": {
+        "Jul": 0.0,
+        "Aug": 5.0,
+        "Sep": 5.0,
+        "Oct": 5.0,
+        "Nov": 5.0,
+        "Dec": 5.0
+      },
+      "baUFloorByMonth": {
+        "Jul": 2.0,
+        "Aug": 2.0,
+        "Sep": 2.0,
+        "Oct": 2.0,
+        "Nov": 2.0,
+        "Dec": 2.0
+      },
+      "position": "Per Jonas/Kato grid. Partner API locked. Net spare Jul/Nov/Dec; over Aug(-1), Sep(-2), Oct(-1). Platform folded in (Access & Runtime + Enablement).",
+      "holidayMonths": [
+        "Jul"
+      ]
+    }
+  ],
+  "people": [
+    {
+      "id": "pawel",
+      "name": "Pawel Plusa",
+      "role": "SF Developer",
+      "stream": "A",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "natasa",
+      "name": "Nataša Ceretkova",
+      "role": "SF Developer",
+      "stream": "A",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "miranda",
+      "name": "Miranda Fonteijn",
+      "role": "Technical Lead",
+      "stream": "A",
+      "isDelivery": true,
+      "fteFactor": 1.0,
+      "note": "September pivot — on all three"
+    },
+    {
+      "id": "arthur",
+      "name": "Arthur Placet",
+      "role": "SF Developer",
+      "stream": "A",
+      "isDelivery": true,
+      "fteFactor": 1.0,
+      "note": "Out Jul–Aug"
+    },
+    {
+      "id": "guljar",
+      "name": "Guljar Shaikh",
+      "role": "Data Specialist",
+      "stream": "B",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "ismail",
+      "name": "Ismail Ferullo",
+      "role": "Sr SFMC Developer",
+      "stream": "B",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "jyhe",
+      "name": "Jyhe Mark",
+      "role": "Sr Backend Developer",
+      "location": "Melbourne",
+      "stream": "C",
+      "isDelivery": true,
+      "locked": "Partner API",
+      "fteFactor": 1.0
+    },
+    {
+      "id": "lasse",
+      "name": "Lasse Sørmo",
+      "role": "Backend Developer",
+      "location": "Oslo",
+      "stream": "C",
+      "isDelivery": true,
+      "locked": "Partner API + Bynder",
+      "fteFactor": 1.0
+    },
+    {
+      "id": "erik",
+      "name": "Erik Schøyen",
+      "role": "Sr Backend Developer",
+      "location": "Oslo",
+      "stream": "C",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "darren",
+      "name": "Darren Cann",
+      "role": "Sr Backend Developer",
+      "location": "Oslo",
+      "stream": "C",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "halvor",
+      "name": "Halvor Spirdal",
+      "role": "Sr Backend Developer",
+      "location": "Oslo",
+      "stream": "C",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "ove",
+      "name": "Ove Bastiansen",
+      "role": "Sr Backend Developer",
+      "location": "Oslo",
+      "stream": "C",
+      "isDelivery": true,
+      "fteFactor": 0.5
+    },
+    {
+      "id": "sylwester",
+      "name": "Sylwester Jastrzebski",
+      "role": "Backend Developer",
+      "location": "Oslo",
+      "stream": "C",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "oyvind",
+      "name": "Øyvind",
+      "role": "Backend / Infra",
+      "stream": "C",
+      "isDelivery": true,
+      "fteFactor": 1.0
+    },
+    {
+      "id": "kirill",
+      "name": "Kirill Harjo",
+      "role": "Test Specialist (QA)",
+      "location": "Tallinn",
+      "stream": "C",
+      "isDelivery": false,
+      "fteFactor": 1.0,
+      "note": "QA across all; not feature dev"
+    }
+  ],
+  "initiatives": [
+    {
+      "id": "H2-11",
+      "name": "ARM — PG↔SF Person Account integration",
+      "stream": "A",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Q3 (Jul–Sep)",
+      "lead": "Pawel + Miranda",
+      "dependencies": [],
+      "source": "Confluence:CS Backlog; SF Core Position",
+      "notes": "Gates Dedupe; PG-side delivery Aug–Sep"
+    },
+    {
+      "id": "H2-25",
+      "name": "Dedupe — SF master for person data",
+      "stream": "A",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Q3 (Sep–Oct, may slip Nov)",
+      "lead": "Nataša + Miranda",
+      "dependencies": [
+        {
+          "to": "H2-11",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "SF Core Position",
+      "notes": "Oct absences may push to Nov; unblocks Customer 360 chain"
+    },
+    {
+      "id": "H2-09",
+      "name": "Lighthouse Phase 2",
+      "stream": "A",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Q3 scope → Q4 full",
+      "lead": "Miranda + Nataša + Arthur",
+      "dependencies": [
+        {
+          "to": "H2-09-brief",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "SF Core Position",
+      "notes": "Needs scoped CX / Sales&Service brief"
+    },
+    {
+      "id": "H2-26",
+      "name": "IROPS Incident Management — finish",
+      "stream": "A",
+      "priority": "P2",
+      "status": "Negotiable",
+      "horizon": "Q4 (Pawel slack)",
+      "lead": "Pawel",
+      "dependencies": [],
+      "source": "SF Core Position",
+      "notes": "~80% done"
+    },
+    {
+      "id": "H2-01",
+      "name": "B2B partner data ownership to Salesforce",
+      "stream": "A",
+      "priority": "P2",
+      "status": "Negotiable (SteerCo)",
+      "horizon": "H2 scoping; impl 2027",
+      "lead": "Pawel + PG",
+      "dependencies": [
+        {
+          "to": "H2-25",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "SF Core Position; North Star",
+      "notes": "Only Data & Systems component on SF Core"
+    },
+    {
+      "id": "H2-30",
+      "name": "My Account — SF identity & user mgmt",
+      "stream": "A",
+      "priority": "P3",
+      "status": "Deferred · CONFLICT",
+      "horizon": "2027",
+      "lead": "SF S&S",
+      "dependencies": [
+        {
+          "to": "H2-25",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "SF Core Position; M&D-42",
+      "notes": "CONFLICT: pinned Q3 vs SF Core 2027"
+    },
+    {
+      "id": "H2-27",
+      "name": "Email-to-Case",
+      "stream": "A",
+      "priority": "P3",
+      "status": "Deferred",
+      "horizon": "2027",
+      "lead": "SF S&S + business",
+      "dependencies": [
+        {
+          "to": "H2-25",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "SF Core Position",
+      "notes": "Needs business resource"
+    },
+    {
+      "id": "H2-08",
+      "name": "Agentforce Quality Management pilot",
+      "stream": "A",
+      "priority": "P3",
+      "status": "Deferred",
+      "horizon": "2027",
+      "lead": "SF S&S + QA",
+      "dependencies": [],
+      "source": "SF Core Position",
+      "notes": "Connect transcripts in SF"
+    },
+    {
+      "id": "M&D-135",
+      "name": "Case Statuses in My Account",
+      "stream": "A",
+      "priority": "P3",
+      "status": "Deferred",
+      "horizon": "2027",
+      "lead": "SF S&S",
+      "dependencies": [
+        {
+          "to": "H2-25",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "M&D initiatives",
+      "notes": "SF capacity + Dedupe"
+    },
+    {
+      "id": "H2-15",
+      "name": "CSC Sales & Groups live reporting",
+      "stream": "A",
+      "priority": "P3",
+      "status": "Unscheduled",
+      "horizon": "2027",
+      "lead": "SF S&S + Data Cloud",
+      "dependencies": [],
+      "source": "CS Backlog",
+      "notes": "Zero SF Q3 headroom"
+    },
+    {
+      "id": "H2-18",
+      "name": "Travel Docs (DocForge → SFMC/Web)",
+      "stream": "B",
+      "priority": "P1",
+      "status": "Committed (CRM side); backend-gated",
+      "horizon": "Q3 (Jul–Oct)",
+      "lead": "Kev / DC",
+      "dependencies": [],
+      "source": "CRM grid",
+      "notes": "DocForge in BETA; backend dependency"
+    },
+    {
+      "id": "H2-17",
+      "name": "CRM Segmentation",
+      "stream": "B",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Q3–Q4",
+      "lead": "Kev / DC",
+      "dependencies": [],
+      "source": "CRM grid",
+      "notes": "Pulls Data Engineer gap"
+    },
+    {
+      "id": "H2-16",
+      "name": "Review Platform (TrustPilot)",
+      "stream": "B",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Q3–Q4 (Jul–Nov)",
+      "lead": "Kev / DC",
+      "dependencies": [],
+      "source": "CRM grid",
+      "notes": "Platform decision; Michelle ratify"
+    },
+    {
+      "id": "H2-07",
+      "name": "Marketing Consent + Double Opt-In",
+      "stream": "B",
+      "priority": "P3",
+      "status": "De-prioritised → 2027",
+      "horizon": "Q4 (Nov–Dec)",
+      "lead": "Kev / SFMC (+SF S&S)",
+      "dependencies": [],
+      "source": "CRM grid; SF Core Position",
+      "notes": "SF S&S says 2027; needs consent data clean-up"
+    },
+    {
+      "id": "H2-10",
+      "name": "Preference Centre (Web/Email)",
+      "stream": "B",
+      "priority": "P3",
+      "status": "De-prioritised → 2027",
+      "horizon": "Q4 (Nov–Dec)",
+      "lead": "Kev / SFMC",
+      "dependencies": [
+        {
+          "to": "H2-07",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "CRM grid",
+      "notes": "Sponsorship unconfirmed; SF S&S says 2027"
+    },
+    {
+      "id": "H2-12",
+      "name": "AirPort Express Automation B2B",
+      "stream": "B",
+      "priority": "P3",
+      "status": "De-prioritised → 2027",
+      "horizon": "Dec →",
+      "lead": "Kev / SFMC",
+      "dependencies": [],
+      "source": "CRM grid",
+      "notes": ""
+    },
+    {
+      "id": "H2-13",
+      "name": "SF Comms Triggers (CCE)",
+      "stream": "B",
+      "priority": "P3",
+      "status": "Deferred",
+      "horizon": "2027",
+      "lead": "Kev / SFMC",
+      "dependencies": [
+        {
+          "to": "H2-07",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "CS Backlog",
+      "notes": ""
+    },
+    {
+      "id": "H2-14",
+      "name": "SF Data Support (mobile, DACH bug)",
+      "stream": "B",
+      "priority": "P3",
+      "status": "Deferred",
+      "horizon": "2027",
+      "lead": "Kev / SFMC",
+      "dependencies": [],
+      "source": "CS Backlog",
+      "notes": ""
+    },
+    {
+      "id": "H2-22",
+      "name": "Partner API v2",
+      "stream": "C",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Jul–Dec (locked)",
+      "lead": "Jyhe + Lasse",
+      "dependencies": [],
+      "source": "Jonas/Kato grid",
+      "notes": "Both dedicated all year"
+    },
+    {
+      "id": "H2-21",
+      "name": "Bynder integration (Partner API)",
+      "stream": "C",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Aug",
+      "lead": "Lasse",
+      "dependencies": [],
+      "source": "Jonas/Kato grid",
+      "notes": "Lasse swaps off Partner API in Aug"
+    },
+    {
+      "id": "H2-24",
+      "name": "Seaware production → OCI",
+      "stream": "C",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Aug effort",
+      "lead": "Jonas + Øyvind",
+      "dependencies": [
+        {
+          "to": "H2-23",
+          "type": "enables"
+        }
+      ],
+      "source": "Jonas/Kato grid",
+      "notes": "OCI work in Aug; cutover window separate"
+    },
+    {
+      "id": "H2-23",
+      "name": "Commercial platform / PG BAU",
+      "stream": "C",
+      "priority": "P1",
+      "status": "Committed (floor)",
+      "horizon": "Jul–Dec",
+      "lead": "Darren/Erik/Halvor/Ove/Sylwester",
+      "dependencies": [],
+      "source": "Jonas/Kato grid",
+      "notes": "Two green BAU lines = ops draw (2.0/mo)"
+    },
+    {
+      "id": "B2X",
+      "name": "B2X Initiatives (backend support)",
+      "stream": "C",
+      "priority": "P2",
+      "status": "Committed",
+      "horizon": "Aug–Dec",
+      "lead": "Sylwester",
+      "dependencies": [],
+      "source": "Jonas/Kato grid",
+      "notes": "Frontend/agent-portal backend support"
+    },
+    {
+      "id": "SF-sup",
+      "name": "Salesforce initiative support",
+      "stream": "C",
+      "priority": "P2",
+      "status": "Committed",
+      "horizon": "Sep–Dec",
+      "lead": "Erik",
+      "dependencies": [],
+      "source": "Jonas/Kato grid",
+      "notes": "Backend support to SF (ARM/API)"
+    },
+    {
+      "id": "H2-03",
+      "name": "Agent-portal for top CSC flows",
+      "stream": "C",
+      "priority": "P2",
+      "status": "In H2 (per grid)",
+      "horizon": "Jul + Sep",
+      "lead": "Erik",
+      "dependencies": [],
+      "source": "Jonas/Kato grid",
+      "notes": "Now resourced — was 'needs decision'"
+    },
+    {
+      "id": "H2-20",
+      "name": "Commission on Tour elements",
+      "stream": "C",
+      "priority": "P2",
+      "status": "In H2 (per grid)",
+      "horizon": "Jul + Oct",
+      "lead": "Sylwester",
+      "dependencies": [
+        {
+          "to": "H2-01",
+          "type": "prerequisite"
+        }
+      ],
+      "source": "Jonas/Kato grid; North Star",
+      "notes": "Now resourced; scope still TBD"
+    },
+    {
+      "id": "H2-05",
+      "name": "SFS / Fidelio stabilisation",
+      "stream": "C",
+      "priority": "P3",
+      "status": "De-prioritised → 2027",
+      "horizon": "2027",
+      "lead": "Jonas + Kato",
+      "dependencies": [],
+      "source": "Jonas/Kato grid",
+      "notes": "Sep firefight — was deferred 2027"
+    },
+    {
+      "id": "WS3",
+      "name": "Switzerland → DACH market migration",
+      "stream": "C",
+      "priority": "P2",
+      "status": "In H2 (per grid)",
+      "horizon": "Aug",
+      "lead": "Darren",
+      "dependencies": [],
+      "source": "Jonas/Kato grid; North Star WS3",
+      "notes": "No as-is/to-be analysis yet"
+    },
+    {
+      "id": "H2-06",
+      "name": "New payment methods (Apple/Google Pay, Vipps)",
+      "stream": "C",
+      "priority": "P3",
+      "status": "Not in grid — confirm",
+      "horizon": "TBD",
+      "lead": "Backend",
+      "dependencies": [],
+      "source": "Jonas canvas",
+      "notes": "'More or less ready'; not allocated"
+    },
+    {
+      "id": "H2-04",
+      "name": "Automate loading & IROPS tasks",
+      "stream": "C",
+      "priority": "P3",
+      "status": "Backlog",
+      "horizon": "Unscheduled",
+      "lead": "Backend",
+      "dependencies": [],
+      "source": "Jonas canvas",
+      "notes": "Not in grid"
+    }
+  ],
+  "utilisation": {
+    "A": [
+      {
+        "activity": "ARM (H2-11)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 1.0,
+          "Sep": 1.0,
+          "Oct": 0,
+          "Nov": 0,
+          "Dec": 0
+        }
+      },
+      {
+        "activity": "Dedupe (H2-25)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 0,
+          "Sep": 0,
+          "Oct": 1.0,
+          "Nov": 1.5,
+          "Dec": 0.5
+        }
+      },
+      {
+        "activity": "Lighthouse Ph2 (H2-09)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 0.8,
+          "Sep": 0.8,
+          "Oct": 0.9,
+          "Nov": 0.9,
+          "Dec": 1.4
+        }
+      },
+      {
+        "activity": "IROPS + B2B scoping",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 0,
+          "Sep": 0,
+          "Oct": 0,
+          "Nov": 0,
+          "Dec": 0.5
+        }
+      }
+    ],
+    "B": [
+      {
+        "activity": "Travel Docs / Segmentation / TrustPilot / Compass / Support (capped 3 FTE)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 3.0,
+          "Sep": 3.0,
+          "Oct": 3.0,
+          "Nov": 2.5,
+          "Dec": 1.25
+        }
+      }
+    ],
+    "C": [
+      {
+        "activity": "Partner API (Jyhe+Lasse)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 1,
+          "Sep": 2,
+          "Oct": 2,
+          "Nov": 2,
+          "Dec": 2
+        }
+      },
+      {
+        "activity": "Bynder (Lasse)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 1,
+          "Sep": 0,
+          "Oct": 0,
+          "Nov": 0,
+          "Dec": 0
+        }
+      },
+      {
+        "activity": "Seaware OCI (Jonas+Øyvind)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 2,
+          "Sep": 0,
+          "Oct": 0,
+          "Nov": 0,
+          "Dec": 0
+        }
+      },
+      {
+        "activity": "Agent portal (Erik)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 1,
+          "Sep": 1,
+          "Oct": 0,
+          "Nov": 0,
+          "Dec": 0
+        }
+      },
+      {
+        "activity": "B2X (Sylwester)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 0,
+          "Sep": 1,
+          "Oct": 1,
+          "Nov": 1,
+          "Dec": 1
+        }
+      },
+      {
+        "activity": "SF init support (Erik)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 0,
+          "Sep": 1,
+          "Oct": 1,
+          "Nov": 1,
+          "Dec": 1
+        }
+      },
+      {
+        "activity": "Commission (Sylwester)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 0,
+          "Sep": 0,
+          "Oct": 1,
+          "Nov": 0,
+          "Dec": 1
+        }
+      },
+      {
+        "activity": "Swiss migration (Darren)",
+        "byMonth": {
+          "Jul": 0,
+          "Aug": 0,
+          "Sep": 0,
+          "Oct": 0,
+          "Nov": 1,
+          "Dec": 0
+        }
+      }
+    ]
+  },
+  "resourceAllocation": {
+    "A": {
+      "provenance": "firm (Sille swim-lane)",
+      "people": [
+        {
+          "person": "Pawel",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "ARM",
+            "Sep": "ARM close",
+            "Oct": "Dedupe assist",
+            "Nov": "IROPS/B2B",
+            "Dec": "IROPS/B2B"
+          }
+        },
+        {
+          "person": "Nataša",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Ph2 prep",
+            "Sep": "Ph2 prep",
+            "Oct": "Dedupe lead",
+            "Nov": "Dedupe lead",
+            "Dec": "Ph2"
+          }
+        },
+        {
+          "person": "Miranda",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "ARM assist + Ph2",
+            "Sep": "ARM close + Ph2",
+            "Oct": "Dedupe + Ph2",
+            "Nov": "Ph2",
+            "Dec": "Ph2"
+          }
+        },
+        {
+          "person": "Arthur",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "out",
+            "Sep": "Ph2 delivery (back)",
+            "Oct": "Ph2 delivery",
+            "Nov": "Ph2 delivery",
+            "Dec": "Ph2 delivery"
+          }
+        }
+      ]
+    },
+    "B": {
+      "provenance": "indicative — confirm with Kev",
+      "people": [
+        {
+          "person": "Guljar",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Seg + DC assist",
+            "Sep": "DC assist",
+            "Oct": "DC assist",
+            "Nov": "DC assist + Seg",
+            "Dec": "Segmentation"
+          }
+        },
+        {
+          "person": "Ismail",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Travel Docs + TrustPilot",
+            "Sep": "Travel Docs + VoC",
+            "Oct": "TrustPilot",
+            "Nov": "Consent/Pref Centre",
+            "Dec": "Consent/Pref + AirPort"
+          }
+        },
+        {
+          "person": "Kev (should be PO)",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Compass + TrustPilot + Support",
+            "Sep": "Compass + Support",
+            "Oct": "Compass + Support",
+            "Nov": "Compass + Consent design + Support",
+            "Dec": "Compass + Support"
+          }
+        },
+        {
+          "person": "Borrowed DC/SF + unfunded gap",
+          "fteByMonth": {
+            "Jul": 0,
+            "Aug": 1.0,
+            "Sep": 0.75,
+            "Oct": 1.0,
+            "Nov": 1.5,
+            "Dec": 0.25
+          }
+        }
+      ]
+    },
+    "C": {
+      "provenance": "firm (Jonas/Kato grid)",
+      "people": [
+        {
+          "person": "Jyhe",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Partner API",
+            "Sep": "Partner API",
+            "Oct": "Partner API",
+            "Nov": "Partner API",
+            "Dec": "Partner API"
+          }
+        },
+        {
+          "person": "Lasse",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Bynder",
+            "Sep": "Partner API",
+            "Oct": "Partner API",
+            "Nov": "Partner API",
+            "Dec": "Partner API"
+          }
+        },
+        {
+          "person": "Jonas",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Seaware OCI",
+            "Sep": "SFS/Fidelio",
+            "Oct": "-",
+            "Nov": "-",
+            "Dec": "-"
+          }
+        },
+        {
+          "person": "Kato",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "-",
+            "Sep": "SFS/Fidelio",
+            "Oct": "-",
+            "Nov": "-",
+            "Dec": "-"
+          }
+        },
+        {
+          "person": "Øyvind",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Seaware OCI",
+            "Sep": "-",
+            "Oct": "-",
+            "Nov": "-",
+            "Dec": "-"
+          }
+        },
+        {
+          "person": "Erik",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "-",
+            "Sep": "Agent portal",
+            "Oct": "SF init support",
+            "Nov": "SF init support",
+            "Dec": "SF init support"
+          }
+        },
+        {
+          "person": "Darren",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "Swiss migration",
+            "Sep": "-",
+            "Oct": "-",
+            "Nov": "-",
+            "Dec": "-"
+          }
+        },
+        {
+          "person": "Sylwester",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "B2X",
+            "Sep": "B2X",
+            "Oct": "Commission x2 + B2X",
+            "Nov": "B2X",
+            "Dec": "B2X"
+          }
+        },
+        {
+          "person": "Halvor / Ove (50%)",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "BaU/platform",
+            "Sep": "BaU/platform",
+            "Oct": "BaU/platform",
+            "Nov": "BaU/platform",
+            "Dec": "BaU/platform"
+          }
+        },
+        {
+          "person": "Kirill",
+          "byMonth": {
+            "Jul": "out — holiday",
+            "Aug": "QA",
+            "Sep": "QA",
+            "Oct": "QA",
+            "Nov": "QA",
+            "Dec": "QA"
+          }
+        }
+      ]
+    }
+  },
+  "dependencies": [
+    {
+      "from": "H2-11",
+      "to": "H2-25",
+      "type": "prerequisite",
+      "note": "ARM gates Dedupe"
+    },
+    {
+      "from": "H2-25",
+      "to": "H2-01",
+      "type": "prerequisite",
+      "note": "Dedupe before partner-data ownership"
+    },
+    {
+      "from": "H2-25",
+      "to": "H2-30",
+      "type": "prerequisite",
+      "note": "Dedupe before My Account"
+    },
+    {
+      "from": "H2-25",
+      "to": "H2-27",
+      "type": "prerequisite",
+      "note": "Dedupe before Email-to-Case"
+    },
+    {
+      "from": "H2-01",
+      "to": "H2-20",
+      "type": "AND",
+      "note": "Partner data before Commission"
+    },
+    {
+      "from": "H2-07",
+      "to": "H2-10",
+      "type": "prerequisite",
+      "note": "Consent before Preference Centre"
+    },
+    {
+      "from": "H2-07",
+      "to": "H2-13",
+      "type": "prerequisite",
+      "note": "Consent before Comms Triggers"
+    },
+    {
+      "from": "H2-23",
+      "to": "H2-24",
+      "type": "enables",
+      "note": "Load test feeds OCI cutover"
+    }
+  ],
+  "criticalPath": {
+    "chain": [
+      "H2-11",
+      "H2-25",
+      "H2-01",
+      "H2-20"
+    ],
+    "branch": [
+      "H2-25",
+      "H2-30",
+      "H2-27"
+    ],
+    "span": "Aug 2026 → Jul 2027 (~12 months; July holiday excluded)",
+    "note": "Re-based to an August start because July is Norwegian holiday. Zero float on ARM→Dedupe; single resources (Pawel, Miranda); PG-side dependency; Oct absences. Removing July shifts the chain ~1 month right — Commission now lands ~Jun 2027. B2B starts January (only prerequisite is the person model), not February.",
+    "dates": {
+      "ARM (H2-11)": "2026-08-01 to 2026-09-30",
+      "Dedupe (H2-25)": "2026-10-01 to 2026-12-15",
+      "Person model ready": "2026-12-15",
+      "B2B partner data (H2-01)": "2027-01-05 to 2027-03-26",
+      "Commission on Tour (H2-20)": "2027-03-26 to 2027-06-09"
+    }
+  },
+  "conflicts": [
+    {
+      "id": 1,
+      "title": "My Account (H2-30) timing",
+      "tension": "Pinned Q3 vs SF Core says 2027 (needs Dedupe first)",
+      "recommendation": "Unpin Q3; run customer-facing build in parallel where it doesn't need the SF person model",
+      "owner": "Sverre + Sille + Digital Products",
+      "status": "open"
+    },
+    {
+      "id": 2,
+      "title": "Consent (H2-07) & Preference Centre (H2-10)",
+      "tension": "Kev plans Nov–Dec (needs SF S&S); SF S&S says 2027 & CX-owned; sponsorship unconfirmed",
+      "recommendation": "Confirm sponsorship + consent data clean-up; if sponsored, resource the SF S&S dependency explicitly",
+      "owner": "Sverre + Kev + Sille + CX",
+      "status": "open"
+    },
+    {
+      "id": 3,
+      "title": "ARM (H2-11) ownership overlap",
+      "tension": "SF Core owns ARM (Pawel); Kev's sheet shows DC assist Aug–Oct",
+      "recommendation": "Confirm single owner; de-duplicate the FTE",
+      "owner": "Sille + Kev",
+      "status": "open"
+    },
+    {
+      "id": 4,
+      "title": "TrustPilot / Travel Docs / Segmentation",
+      "tension": "Top-down view descoped/deferred; Kev plans all three in H2",
+      "recommendation": "Keep IN on CRM/DC team; Travel Docs still gated by Backend + DocForge",
+      "owner": "Kev + Jonas",
+      "status": "open"
+    },
+    {
+      "id": 5,
+      "title": "SteerCo 'Data & Systems' capacity gap",
+      "tension": "Assumes SF Core absorbs more; real capacity 2.4 FTE; only B2B scoping sits with SF Core",
+      "recommendation": "Re-baseline to 2.4 SF Core FTE; VAT Q3 (Backend); Commission Q2 2027",
+      "owner": "Sverre at SteerCo",
+      "status": "open"
+    },
+    {
+      "id": 6,
+      "title": "Lighthouse Ph2 (H2-09) scope",
+      "tension": "SF Core commits the team but scope undefined; CRM has zero capacity",
+      "recommendation": "Sales/Service + CX deliver a scoped brief before Q3; SF Core-only delivery",
+      "owner": "Sille + Jude + CX",
+      "status": "open"
+    },
+    {
+      "id": 7,
+      "title": "Booking Solutions September overload",
+      "tension": "Over Aug(-1), Sep(-2), Oct(-1); SFS + Agent portal + B2X + SF support converge",
+      "recommendation": "Move flexible work (Commission, Swiss) into Jul/Nov/Dec spare",
+      "owner": "Jonas + Kato",
+      "status": "open"
+    },
+    {
+      "id": 8,
+      "title": "CRM Data Engineer",
+      "tension": "2-IC team ~2x over; Segmentation + Agentforce pull same resource; PO role displaced",
+      "recommendation": "Approve a dedicated Data Engineer hire",
+      "owner": "Sverre (headcount)",
+      "status": "open"
+    }
+  ],
+  "milestones": [
+    {
+      "id": "mpm",
+      "name": "Person model ready (Dedupe done)",
+      "date": "2026-12-15",
+      "initiative": "H2-25"
+    },
+    {
+      "id": "mma",
+      "name": "My Account identity live",
+      "date": "2027-03-21",
+      "initiative": "H2-30"
+    },
+    {
+      "id": "mc",
+      "name": "Commission on Tour live",
+      "date": "2027-06-15",
+      "initiative": "H2-20"
+    }
+  ],
+  "northStar": {
+    "verdict": "Right direction; current project plan is a scoping document presented as an execution plan.",
+    "gaps": [
+      "No change management on WS2/WS3 (WS4 Groups proves the capability exists).",
+      "WS1 core empty — WS1 ASIS / WS1 TOBE tabs blank; agency-data-governance prerequisite 'Not started'.",
+      "WS2 not implementable — cells read 'How much time will this take?'; all dates TBD.",
+      "WS3 no as-is/to-be — jumps to target state; Switzerland estimated '1 day to 2 months'.",
+      "Aggressive timelines — start dates carry '?'; gated on 2.4 SF Core FTE and VAT go-live."
+    ]
+  },
+  "sources": [
+    {
+      "id": "sfcore",
+      "system": "PDF",
+      "title": "SF Core H2 2026 — Position (Sille)"
+    },
+    {
+      "id": "crm",
+      "system": "Image/grid",
+      "title": "CRM monthly resourcing (Kev)"
+    },
+    {
+      "id": "booking",
+      "system": "Image/grid",
+      "title": "Booking Solutions allocation grid (Jonas/Kato)"
+    },
+    {
+      "id": "backlog",
+      "system": "Confluence",
+      "title": "Customer Systems Backlog H2 2026",
+      "url": "https://hurtigruten.atlassian.net/wiki/spaces/CS/pages/5897224201"
+    },
+    {
+      "id": "capacity",
+      "system": "Confluence",
+      "title": "Roadmap vs Capacity (KW)",
+      "url": "https://hurtigruten.atlassian.net/wiki/spaces/CS/pages/5928583186"
+    },
+    {
+      "id": "northstar",
+      "system": "Excel",
+      "title": "Project_plan_Commercial north star 2026"
+    },
+    {
+      "id": "org",
+      "system": "PPTX",
+      "title": "JD 2025 Customer Systems (org)"
+    }
+  ]
+}
