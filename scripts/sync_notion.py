@@ -329,6 +329,7 @@ def run_sync(dry_run=False, only_id=None):
     db_id = "28494165-72f7-800c-b1af-e98a49f6efa2"
     url = f"https://api.notion.com/v1/databases/{db_id}/query"
     current_new_existing = {}
+    notion_backup_data = {}
     has_more = True
     start_cursor = None
     
@@ -343,6 +344,7 @@ def run_sync(dry_run=False, only_id=None):
             for page in data.get("results", []):
                 pid = page["id"]
                 props = page.get("properties", {})
+                notion_backup_data[pid] = props
                 ne_prop = props.get("New / Existing", {}).get("select")
                 ne_name = ne_prop.get("name") if ne_prop else None
                 if ne_name:
@@ -353,6 +355,13 @@ def run_sync(dry_run=False, only_id=None):
             print(f"Warning: Failed to fetch database pages from Notion: {res.status_code} - {res.text}")
             has_more = False
     print(f"Loaded {len(current_new_existing)} pages with New / Existing values from Notion.")
+
+    # Save backup of the current database state before modifying anything live
+    if not dry_run:
+        backup_path = "scripts/notion_backup.json"
+        with open(backup_path, "w") as f:
+            json.dump(notion_backup_data, f, indent=2)
+        print(f"Saved original database backup to {backup_path}")
 
     # Fallback classifications for New / Existing
     init_new_or_existing = {
