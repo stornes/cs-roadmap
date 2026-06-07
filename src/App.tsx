@@ -200,7 +200,7 @@ export default function App() {
   }, [currentUser]);
 
   // 3. Perform live computations (RAG, Headroom, Critical Path)
-  const recomputeData = useRecompute(streams, initiatives, allocations, milestones);
+  const recomputeData = useRecompute(streams, initiatives, allocations, milestones, people);
 
   // 4. Mutation handlers with audit logs
   const handleAddAuditLog = async (action: string, details: any) => {

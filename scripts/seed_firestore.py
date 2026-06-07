@@ -117,7 +117,18 @@ def seed_db():
         "Travel Docs": "H2-18", "Travel Docs + TrustPilot": "H2-18", "Travel Docs + VoC": "H2-18",
         "TrustPilot": "H2-16",
         "Consent/Pref Centre": "H2-07", "Consent/Pref + AirPort": "H2-07",
-        "Compass + VoC + Support": "H2-17", "Compass + TrustPilot + Support": "H2-17", "Compass + Support": "H2-17", "Compass + Consent design + Support": "H2-17"
+        "Compass + VoC + Support": "H2-17", "Compass + TrustPilot + Support": "H2-17", "Compass + Support": "H2-17", "Compass + Consent design + Support": "H2-17",
+        "AirPort": "H2-12",
+        "Commission x2": "H2-20",
+        "Compass": "H2-17",
+        "Consent design": "H2-07",
+        "Consent/Pref": "H2-07",
+        "DC assist": "H2-17",
+        "QA": "H2-23",
+        "SFS/Fidelio": "H2-05",
+        "Seg": "H2-17",
+        "Support": "H2-17",
+        "VoC": "H2-17"
     }
 
     for stream_id, val in roadmap_data["resourceAllocation"].items():
