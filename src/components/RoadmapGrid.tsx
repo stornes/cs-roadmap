@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Initiative, Allocation, Stream } from '../hooks/useRecompute';
-import { ChevronDown, ChevronRight, Save, Trash2, Plus } from 'lucide-react';
+import { ChevronDown, ChevronRight, Save, Trash2, Plus, ExternalLink } from 'lucide-react';
+import notionMappings from '../notion_mappings.json';
 
 interface RoadmapGridProps {
   streams: Stream[];
@@ -28,6 +29,11 @@ export const RoadmapGrid: React.FC<RoadmapGridProps> = ({
   onDeleteInitiative
 }) => {
   const [selectedInitId, setSelectedInitId] = useState<string | null>(null);
+  
+  const getNotionPageId = (initId: string): string | null => {
+    const entry = Object.entries(notionMappings).find(([_, value]) => value === initId);
+    return entry ? entry[0] : null;
+  };
   const [filterStream, setFilterStream] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -303,8 +309,20 @@ export const RoadmapGrid: React.FC<RoadmapGridProps> = ({
                               <td className="py-3.5 px-4 font-mono font-semibold text-gray-400">
                                 {init.id}
                               </td>
-                              <td className="py-3.5 px-4 font-medium text-white group-hover:text-brand-purple transition-colors">
-                                {init.name}
+                              <td className="py-3.5 px-4 font-medium text-white group-hover:text-brand-purple transition-colors flex items-center gap-2">
+                                <span>{init.name}</span>
+                                {getNotionPageId(init.id) && (
+                                  <a
+                                    href={`https://www.notion.so/${getNotionPageId(init.id)?.replace(/-/g, '')}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="p-1 text-gray-500 hover:text-brand-purple hover:bg-white/5 rounded transition-all shrink-0"
+                                    title="View in Notion"
+                                  >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
+                                )}
                               </td>
                               <td className="py-3.5 px-4">
                                 <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getPriorityColor(init.priority)}`}>
@@ -350,8 +368,21 @@ export const RoadmapGrid: React.FC<RoadmapGridProps> = ({
       {selectedInitId && selectedInit && (
         <div className="w-[480px] glass border-l border-white/10 p-6 flex flex-col h-full overflow-hidden absolute right-0 top-0 z-20 shadow-2xl animate-in slide-in-from-right duration-250">
           <div className="flex items-center justify-between pb-4 border-b border-white/5 mb-6">
-            <div>
-              <h3 className="text-xs font-mono font-semibold text-gray-400">{selectedInitId}</h3>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs font-mono font-semibold text-gray-400">{selectedInitId}</h3>
+                {getNotionPageId(selectedInitId) && (
+                  <a
+                    href={`https://www.notion.so/${getNotionPageId(selectedInitId)?.replace(/-/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-[10px] text-brand-purple hover:underline"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>View Notion Page</span>
+                  </a>
+                )}
+              </div>
               <h2 className="text-xl font-display font-semibold text-white truncate max-w-[320px]">{editFields.name}</h2>
             </div>
             <button
