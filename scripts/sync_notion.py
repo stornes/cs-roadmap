@@ -117,6 +117,61 @@ def parse_horizon(horizon):
         
     return start, end
 
+def parse_confluence_timeline(timeline_str):
+    if not timeline_str:
+        return None, None
+    t = timeline_str.lower().strip()
+    if "tbc" in t or "tbd" in t or "n/a" in t:
+        return None, None
+        
+    start, end = None, None
+    if "q1-q3" in t:
+        start = "2026-01-01"
+        end = "2026-09-30"
+    elif "q3-q4" in t or "q3 - q4" in t or "h2" in t:
+        start = "2026-07-01"
+        end = "2026-12-31"
+    elif "q4" in t:
+        start = "2026-10-01"
+        end = "2026-12-31"
+    elif "q3" in t:
+        start = "2026-07-01"
+        end = "2026-09-30"
+    elif "q2 might slip to q3" in t:
+        start = "2026-04-01"
+        end = "2026-09-30"
+    elif "jul-dec" in t or "jul - dec" in t:
+        start = "2026-07-01"
+        end = "2026-12-31"
+    elif "aug" in t and "dec" in t:
+        start = "2026-08-01"
+        end = "2026-12-31"
+    elif "sep" in t and "dec" in t:
+        start = "2026-09-01"
+        end = "2026-12-31"
+        
+    return start, end
+
+def get_teams_from_confluence(text):
+    t = text.lower()
+    teams = set()
+    
+    # Salesforce / Core team
+    if "salesforce" in t or "sf" in re.split(r"\W+", t) or "sales/service" in t or "sales & service" in t:
+        teams.add("SF Sales & Service Operations")
+    
+    # SFMC / Marketing / Analytics / CRM
+    if any(x in t for x in ["sfmc", "marketing cloud", "data cloud", "crm", "segmentation", "preference"]):
+        teams.add("SF Marketing & Analytics Operations")
+        
+    # Backend / PG
+    if any(x in t for x in ["backend", "platform", "pg api", "pg client", "seaware", "polar global"]):
+        teams.add("Backend Team")
+    if "pg" in re.split(r"\W+", t):
+        teams.add("Backend Team")
+            
+    return teams
+
 # Map Firestore status to Notion RAG status
 def map_rag_status(fs_status, has_conflict=False):
     st = fs_status.lower()
@@ -382,6 +437,25 @@ def run_sync(dry_run=False, only_id=None):
         "H2-24": "New",
     }
     
+    # User confirmed team assignments to avoid auto-calculation or guessing
+    user_assigned_teams = {
+        "H2-11": ["SF Sales & Service Operations", "Backend Team"],
+        "H2-25": ["SF Sales & Service Operations"],
+        "H2-01": ["SF Sales & Service Operations", "Backend Team", "Commercial"],
+        "H2-20": ["Backend Team", "SF Sales & Service Operations", "Commercial"],
+        "H2-30": ["SF Sales & Service Operations"],
+        "H2-27": ["SF Sales & Service Operations"],
+        "H2-18": ["SF Marketing & Analytics Operations", "Backend Team"],
+        "H2-17": ["SF Marketing & Analytics Operations"],
+        "H2-16": ["SF Marketing & Analytics Operations"],
+        "H2-12": ["SF Marketing & Analytics Operations"],
+        "H2-07": ["SF Marketing & Analytics Operations"],
+        "H2-10": ["SF Marketing & Analytics Operations", "SF Sales & Service Operations"],
+        "H2-09": ["SF Sales & Service Operations"],
+        "H2-22": ["Backend Team"],
+        "H2-24": ["Backend Team"],
+    }
+    
     # 2. Fetch Firestore initiatives and conflicts
     fs_inits = {}
     init_docs = db.collection("initiatives").where("cycleId", "==", cycle_id).stream()
@@ -466,16 +540,40 @@ def run_sync(dry_run=False, only_id=None):
             
         fs_init = fs_inits[fs_init_id]
         
+        # Match with Confluence row to populate description/deliveries/OKRs
+        conf_row = match_firestore_to_confluence(fs_init_id, fs_init.get("name", ""), confluence_rows)
+        
         # Calculate RAG and Dates
         has_conflict = fs_init_id in conflict_inits
         notion_rag = map_rag_status(fs_init.get("status", ""), has_conflict)
-        start_date, end_date = parse_horizon(fs_init.get("horizon", ""))
+        
+        # Try Confluence timeline first
+        start_date, end_date = None, None
+        if conf_row and len(conf_row) > 7:
+            start_date, end_date = parse_confluence_timeline(conf_row[7])
+            
+        # Fall back to Firestore horizon if not found or TBC
+        if not start_date or not end_date:
+            start_date, end_date = parse_horizon(fs_init.get("horizon", ""))
         
         # Build update payload
         properties = {
             "RAG": {
                 "select": {
                     "name": notion_rag
+                }
+            },
+            "Accountable": {
+                "people": [
+                    {
+                        "object": "user",
+                        "id": "11bd872b-594c-8125-9230-0002c40c9474"
+                    }
+                ]
+            },
+            "2026 Priority": {
+                "select": {
+                    "name": "yes"
                 }
             }
         }
@@ -486,8 +584,8 @@ def run_sync(dry_run=False, only_id=None):
             "multi_select": [{"name": q} for q in quarters]
         }
         
-        # Add Teams Involved multi_select based on allocations
-        teams = list(init_teams.get(fs_init_id, []))
+        # Add Teams Involved multi_select based on user-confirmed assignments
+        teams = user_assigned_teams.get(fs_init_id, [])
         properties["Teams Involved"] = {
             "multi_select": [{"name": team} for team in teams]
         }
@@ -519,8 +617,6 @@ def run_sync(dry_run=False, only_id=None):
                 "date": None
             }
             
-        # Match with Confluence row to populate description/deliveries/OKRs
-        conf_row = match_firestore_to_confluence(fs_init_id, fs_init.get("name", ""), confluence_rows)
         if conf_row:
             parsed_conf = parse_confluence_desc_col(conf_row[5])
             

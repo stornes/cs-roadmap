@@ -132,10 +132,40 @@ def rollback(backup_path="scripts/notion_backup.json", dry_run=False):
         else:
             properties["Expected impact"] = {"rich_text": []}
             
+        # 8. Teams Involved
+        teams_prop = props.get("Teams Involved", {})
+        if teams_prop.get("multi_select"):
+            properties["Teams Involved"] = {
+                "multi_select": [{"name": item["name"]} for item in teams_prop["multi_select"]]
+            }
+        else:
+            properties["Teams Involved"] = {"multi_select": []}
+            
+        # 9. Accountable
+        acc_prop = props.get("Accountable", {})
+        if acc_prop.get("people"):
+            properties["Accountable"] = {
+                "people": [{"object": "user", "id": item["id"]} for item in acc_prop["people"]]
+            }
+        else:
+            properties["Accountable"] = {"people": []}
+            
+        # 10. 2026 Priority
+        prio_prop = props.get("2026 Priority", {})
+        if prio_prop.get("select"):
+            properties["2026 Priority"] = {
+                "select": {"name": prio_prop["select"]["name"]}
+            }
+        else:
+            properties["2026 Priority"] = {"select": None}
+            
         print(f"  RAG: {properties['RAG']['select']}")
         print(f"  Timeline: {properties['Timeline']['date']}")
         print(f"  Quarter: {properties['Quarter']['multi_select']}")
+        print(f"  Teams Involved: {properties['Teams Involved']['multi_select']}")
         print(f"  New / Existing: {properties['New / Existing']['select']}")
+        print(f"  Accountable: {properties['Accountable']['people']}")
+        print(f"  2026 Priority: {properties['2026 Priority']['select']}")
         
         if not dry_run:
             url = f"https://api.notion.com/v1/pages/{orig_page_key}"
