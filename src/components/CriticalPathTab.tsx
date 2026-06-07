@@ -185,6 +185,62 @@ export const CriticalPathTab: React.FC = () => {
     },
     // 4. Has float
     {
+      id: 'H2-18',
+      name: 'Travel Docs (H2-18)',
+      category: 'float',
+      confluenceId: 'CS-26H2-18',
+      startMonth: 0,
+      durationMonths: 4,
+      color: 'blue',
+      desc: 'DocForge to SFMC integration for surfacing PDF itinerary attachments and print versions.',
+      goal: 'Integrate Travel Docs generation and sync with Salesforce Marketing Cloud by Q3.',
+      success: 'Travel Docs PDF generation live and automated emails sending via SFMC.',
+      teams: 'SFMC: 1, Backend: 1',
+      timeline: 'Jul-Oct 2026'
+    },
+    {
+      id: 'H2-17',
+      name: 'CRM Segmentation (H2-17)',
+      category: 'float',
+      confluenceId: 'CS-26H2-17',
+      startMonth: 0,
+      durationMonths: 6,
+      color: 'blue',
+      desc: 'Productionise Data Cloud segment models, Compass CRM reporting, and Reviews analysis.',
+      goal: 'Deliver segmentation model activation and reporting in H2.',
+      success: 'Segmentation segments synced and Compass reporting live in PowerBI.',
+      teams: 'CRM: 1.5, Data Cloud: 0.5',
+      timeline: 'Jul-Dec 2026'
+    },
+    {
+      id: 'H2-16',
+      name: 'Review Platform / Trustpilot (H2-16)',
+      category: 'float',
+      confluenceId: 'CS-26H2-16',
+      startMonth: 0,
+      durationMonths: 5,
+      color: 'blue',
+      desc: 'Integrate Review Platform (Trustpilot) and enable feedback loops.',
+      goal: 'Complete review platform decision and integration in H2.',
+      success: 'Trustpilot integration live and data feeds into BI dashboard.',
+      teams: 'SFMC: 0.5, QA: 0.5',
+      timeline: 'Jul-Nov 2026'
+    },
+    {
+      id: 'H2-12',
+      name: 'AirPort Express B2B (H2-12)',
+      category: 'float',
+      confluenceId: 'CS-26H2-12',
+      startMonth: 5,
+      durationMonths: 1,
+      color: 'blue',
+      desc: 'Airport Express Automation B2B to improve B2B bookers\' UX.',
+      goal: 'Deliver B2B booking automation flow in Dec.',
+      success: 'B2B automation live, saving operational time.',
+      teams: 'SFMC: 0.25',
+      timeline: 'Dec 2026'
+    },
+    {
       id: 'H2-07',
       name: 'Consent backend (H2-07)',
       category: 'float',
@@ -309,7 +365,7 @@ export const CriticalPathTab: React.FC = () => {
                   className={`border-b border-white/5 px-4 flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-wider ${
                     cat.key === 'holiday' ? 'h-[44px]' :
                     cat.key === 'critical' ? 'h-[216px]' :
-                    cat.key === 'co-critical' ? 'h-[96px]' : 'h-[240px]'
+                    cat.key === 'co-critical' ? 'h-[96px]' : 'h-[390px]'
                   }`}
                   style={{
                     backgroundColor: cat.key === 'co-critical' ? 'rgba(239, 68, 68, 0.02)' : 'transparent'
@@ -352,7 +408,7 @@ export const CriticalPathTab: React.FC = () => {
                     className={`border-b border-white/5 relative flex flex-col justify-center space-y-2.5 py-3 ${
                       cat.key === 'holiday' ? 'h-[44px]' :
                       cat.key === 'critical' ? 'h-[216px]' :
-                      cat.key === 'co-critical' ? 'h-[96px]' : 'h-[240px]'
+                      cat.key === 'co-critical' ? 'h-[96px]' : 'h-[390px]'
                     }`}
                     style={{
                       backgroundColor: cat.key === 'co-critical' ? 'rgba(239, 68, 68, 0.01)' : 'transparent'
