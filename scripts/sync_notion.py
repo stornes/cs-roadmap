@@ -400,6 +400,45 @@ def run_sync(dry_run=False, only_id=None):
             if "dedupe" in title or "h2-25" in title:
                 conflict_inits.add("H2-25")
     
+    # 2.5 Fetch allocations and people to determine teams involved
+    people_map = {}
+    for doc in db.collection("people").stream():
+        people_map[doc.id] = doc.to_dict()
+        
+    alloc_docs = db.collection("allocations").where("cycleId", "==", cycle_id).stream()
+    init_teams = {}
+    stream_to_team = {
+        "A": "SF Sales & Service Operations",
+        "B": "SF Marketing & Analytics Operations",
+        "C": "Backend Team"
+    }
+    missing_person_stream = {
+        "jonas": "C",
+        "kato": "C",
+        "kev": "B",
+        "borrowed_dc": "B",
+    }
+    for doc in alloc_docs:
+        a = doc.to_dict()
+        init_id = a.get("initiativeId")
+        person_id = a.get("personId")
+        fte = a.get("fte", 0)
+        if fte <= 0:
+            continue
+        person = people_map.get(person_id)
+        if not person:
+            stream = missing_person_stream.get(person_id)
+        else:
+            stream = person.get("stream")
+        if not stream:
+            continue
+        team_name = stream_to_team.get(stream)
+        if not team_name:
+            continue
+        if init_id not in init_teams:
+            init_teams[init_id] = set()
+        init_teams[init_id].add(team_name)
+        
     print(f"Loaded {len(fs_inits)} initiatives from Firestore.")
     
     # 3. Load Confluence rows
@@ -445,6 +484,12 @@ def run_sync(dry_run=False, only_id=None):
         quarters = get_quarters_from_dates(start_date, end_date)
         properties["Quarter"] = {
             "multi_select": [{"name": q} for q in quarters]
+        }
+        
+        # Add Teams Involved multi_select based on allocations
+        teams = list(init_teams.get(fs_init_id, []))
+        properties["Teams Involved"] = {
+            "multi_select": [{"name": team} for team in teams]
         }
         
         # Determine New / Existing value (preserve if already set on Notion, else use fallback map)
@@ -497,6 +542,7 @@ def run_sync(dry_run=False, only_id=None):
             print(f"  RAG: {notion_rag}")
             print(f"  Timeline: {start_date} to {end_date}")
             print(f"  Quarter: {', '.join(quarters)}")
+            print(f"  Teams Involved: {', '.join(teams)}")
             print(f"  New / Existing: {new_existing_val}")
             print(f"  Description: {parsed_conf['description'][:60]}...")
             print(f"  Delivery (Deliveries): {parsed_conf['deliveries'][:60]}...")
@@ -506,6 +552,7 @@ def run_sync(dry_run=False, only_id=None):
             print(f"  RAG: {notion_rag}")
             print(f"  Timeline: {start_date} to {end_date}")
             print(f"  Quarter: {', '.join(quarters)}")
+            print(f"  Teams Involved: {', '.join(teams)}")
             print(f"  New / Existing: {new_existing_val}")
             
         # Handle Warning Comment
