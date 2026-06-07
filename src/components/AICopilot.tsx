@@ -82,7 +82,7 @@ export const AICopilot: React.FC<AICopilotProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: 'ai',
-      text: "Hello! I am your Hurtigruten Customer Systems Roadmap Copilot. I can help analyze capacities, check for resource constraints, trace critical paths, and suggest prioritization shifts. Try asking 'What are the current capacity overloads?' or 'Which initiatives are on the critical path?'",
+      text: "Hello! I am your Customer Systems Roadmap AI Copilot. I can assist with roadmap analysis (capacities, critical paths, overloads), fetch context from your Jira/Notion/Slack tools, or answer any other questions you have. How can I help you today?",
       timestamp: new Date()
     }
   ]);
@@ -501,10 +501,10 @@ ${memoryContextText}
 Use the above memory context to answer any historical queries, project context requests, or background decisions that may not be present in the raw roadmap tables.` : ''}
 
 INSTRUCTIONS:
-1. Provide accurate, clear, and context-backed answers based strictly on the provided roadmap snapshot and OpenBrain memory context.
+1. Provide accurate, clear, and context-backed answers based on the provided roadmap snapshot, OpenBrain memory context, and any external tools (Jira, Notion, Slack).
 2. If there are capacity overloads (headroom < 0), explain who is overloaded, in what stream, and in which month.
-3. Be professional, concise, and helpful. Use bold text, bullet points, and tables to structure your answer beautifully.
-4. If a question is unrelated to the roadmap, retrieved memories, or your external tools (Jira, Notion, Slack), politely redirect the user to ask about the roadmap.`;
+3. Be professional, comprehensive, and helpful. Use bold text, bullet points, and tables to structure your answer beautifully.
+4. You are omnipotent and can assist with any topic or query the user raises, integrating general reasoning, external knowledge, and external tools to address their questions fully.`;
 
       let contents: any[] = [
         {
