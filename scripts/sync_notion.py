@@ -538,6 +538,24 @@ def run_sync(dry_run=False, only_id=None):
             print(f"Warning: Mapped Firestore ID {fs_init_id} not found in Firestore.")
             continue
             
+        # Enforce rule: Never change anything in Notion that Sverre does not own
+        norm_page_id = notion_page_id.replace("-", "")
+        current_props = None
+        for pid, pprops in notion_backup_data.items():
+            if pid.replace("-", "") == norm_page_id:
+                current_props = pprops
+                break
+                
+        if not current_props:
+            print(f"Skipping {fs_init_id} - Page {notion_page_id} not found in Notion database fetch.")
+            continue
+            
+        acc_people = current_props.get("Accountable", {}).get("people", [])
+        has_sverre = any(person.get("id") == "11bd872b-594c-8125-9230-0002c40c9474" for person in acc_people)
+        if not has_sverre:
+            print(f"Skipping {fs_init_id} - Page is not owned by Sverre Stornes.")
+            continue
+            
         fs_init = fs_inits[fs_init_id]
         
         # Match with Confluence row to populate description/deliveries/OKRs

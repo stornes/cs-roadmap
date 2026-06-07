@@ -65,6 +65,24 @@ def rollback(backup_path="scripts/notion_backup.json", dry_run=False):
             # Page was out of critical path scope
             continue
             
+        print(f"Checking Page {page_id} (Initiative {fs_init_id}) live state...")
+        page_url = f"https://api.notion.com/v1/pages/{orig_page_key}"
+        try:
+            res = requests.get(page_url, headers=headers)
+            if res.status_code == 200:
+                live_props = res.json().get("properties", {})
+                acc_people = live_props.get("Accountable", {}).get("people", [])
+                has_sverre = any(person.get("id") == "11bd872b-594c-8125-9230-0002c40c9474" for person in acc_people)
+                if not has_sverre:
+                    print(f"  Skipping rollback - page is not currently owned by Sverre Stornes.")
+                    continue
+            else:
+                print(f"  Warning: Failed to fetch live page state: {res.status_code} - {res.text}")
+                continue
+        except Exception as e:
+            print(f"  Warning: Error fetching live page state: {e}")
+            continue
+
         print(f"Restoring Page {page_id} (Initiative {fs_init_id}):")
         
         # Build clean patch payload from backup properties
