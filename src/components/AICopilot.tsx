@@ -528,51 +528,59 @@ INSTRUCTIONS:
             parts: response.candidates?.[0]?.content?.parts || []
           });
 
-          // Execute each requested tool call
-          const responseParts = [];
-          for (const call of functionCalls) {
-            const toolName = call.name;
-            const toolArgs = call.args;
+          // Execute all requested tool calls in parallel
+          const responseParts = await Promise.all(
+            functionCalls.map(async (call) => {
+              const toolName = call.name;
+              const toolArgs = call.args;
 
-            setMessages(prev => [
-              ...prev,
-              {
-                sender: 'ai',
-                text: `*System: Google Copilot is querying your remote server's "${toolName}" endpoint...*`,
-                timestamp: new Date()
-              }
-            ]);
-
-            try {
-              const cleanMcpUrl = mcpServerUrl.replace(/\/$/, "");
-              const apiRes = await fetch(`${cleanMcpUrl}/api/tools`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: toolName, arguments: toolArgs })
-              });
-
-              if (!apiRes.ok) {
-                const errTxt = await apiRes.text();
-                throw new Error(errTxt || `HTTP ${apiRes.status}`);
-              }
-
-              const apiData = await apiRes.json();
-              responseParts.push({
-                functionResponse: {
-                  name: toolName,
-                  response: { content: apiData.result || JSON.stringify(apiData) }
+              setMessages(prev => [
+                ...prev,
+                {
+                  sender: 'ai',
+                  text: `*System: Google Copilot is querying your remote server's "${toolName}" endpoint...*`,
+                  timestamp: new Date()
                 }
-              });
-            } catch (err: any) {
-              console.error(`Tool execution failed for ${toolName}:`, err);
-              responseParts.push({
-                functionResponse: {
-                  name: toolName,
-                  response: { content: `Error: ${err.message || String(err)}` }
+              ]);
+
+              try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000); // 2-second fast timeout
+
+                const cleanMcpUrl = mcpServerUrl.replace(/\/$/, "");
+                const apiRes = await fetch(`${cleanMcpUrl}/api/tools`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name: toolName, arguments: toolArgs }),
+                  signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!apiRes.ok) {
+                  const errTxt = await apiRes.text();
+                  throw new Error(errTxt || `HTTP ${apiRes.status}`);
                 }
-              });
-            }
-          }
+
+                const apiData = await apiRes.json();
+                return {
+                  functionResponse: {
+                    name: toolName,
+                    response: { content: apiData.result || JSON.stringify(apiData) }
+                  }
+                };
+              } catch (err: any) {
+                console.error(`Tool execution failed for ${toolName}:`, err);
+                const isAbort = err.name === 'AbortError';
+                return {
+                  functionResponse: {
+                    name: toolName,
+                    response: { content: `Error: ${isAbort ? 'Connection timeout' : err.message || String(err)}` }
+                  }
+                };
+              }
+            })
+          );
 
           // Add tool results to history as a user message
           contents.push({
@@ -586,6 +594,13 @@ INSTRUCTIONS:
           responseText = response.text();
           break;
         }
+      }
+
+      // If loop finished (limit hit or no text response generated yet), do a fallback call without tools to guarantee a response
+      if (!responseText) {
+        const modelNoTools = genAI.getGenerativeModel({ model: geminiModel });
+        const fallbackResult = await modelNoTools.generateContent({ contents });
+        responseText = fallbackResult.response.text();
       }
 
       setMessages(prev => [...prev, { sender: 'ai', text: responseText, timestamp: new Date() }]);
