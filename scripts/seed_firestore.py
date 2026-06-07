@@ -132,6 +132,73 @@ def seed_db():
     }
 
     for stream_id, val in roadmap_data["resourceAllocation"].items():
+        if stream_id == "B":
+            # Seed Kev's roadmap directly using the correct allocations
+            print("Seeding Stream B allocations (Kev's roadmap)...")
+            stream_b_allocations = [
+                # August (Total: 4.0 FTE)
+                {"personId": "ismail", "initiativeId": "H2-18", "month": "Aug", "fte": 0.5},
+                {"personId": "ismail", "initiativeId": "H2-16", "month": "Aug", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-16", "month": "Aug", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-17", "month": "Aug", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-18", "month": "Aug", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-17", "month": "Aug", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-17", "month": "Aug", "fte": 0.25},
+                {"personId": "borrowed_dc", "initiativeId": "H2-11", "month": "Aug", "fte": 0.25},
+                {"personId": "borrowed_dc", "initiativeId": "H2-23", "month": "Aug", "fte": 0.5},
+
+                # September (Total: 3.75 FTE)
+                {"personId": "ismail", "initiativeId": "H2-18", "month": "Sep", "fte": 0.5},
+                {"personId": "ismail", "initiativeId": "H2-16", "month": "Sep", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-17", "month": "Sep", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-11", "month": "Sep", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-17", "month": "Sep", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-11", "month": "Sep", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-17", "month": "Sep", "fte": 0.25},
+                {"personId": "borrowed_dc", "initiativeId": "H2-23", "month": "Sep", "fte": 0.5},
+
+                # October (Total: 4.0 FTE)
+                {"personId": "ismail", "initiativeId": "H2-18", "month": "Oct", "fte": 0.5},
+                {"personId": "ismail", "initiativeId": "H2-16", "month": "Oct", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-17", "month": "Oct", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-25", "month": "Oct", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-11", "month": "Oct", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-25", "month": "Oct", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-11", "month": "Oct", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-23", "month": "Oct", "fte": 0.5},
+
+                # November (Total: 4.5 FTE)
+                {"personId": "ismail", "initiativeId": "H2-16", "month": "Nov", "fte": 0.5},
+                {"personId": "ismail", "initiativeId": "H2-07", "month": "Nov", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-17", "month": "Nov", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-10", "month": "Nov", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-25", "month": "Nov", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-07", "month": "Nov", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-25", "month": "Nov", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-10", "month": "Nov", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-23", "month": "Nov", "fte": 0.5},
+
+                # December (Total: 3.25 FTE)
+                {"personId": "ismail", "initiativeId": "H2-16", "month": "Dec", "fte": 0.5},
+                {"personId": "ismail", "initiativeId": "H2-07", "month": "Dec", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-17", "month": "Dec", "fte": 0.5},
+                {"personId": "guljar", "initiativeId": "H2-10", "month": "Dec", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-07", "month": "Dec", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-10", "month": "Dec", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-12", "month": "Dec", "fte": 0.25}
+            ]
+            for a in stream_b_allocations:
+                alloc_id = f"{a['personId']}_{a['initiativeId']}_{a['month']}"
+                db.collection("allocations").document(alloc_id).set({
+                    "cycleId": cycle_id,
+                    "personId": a["personId"],
+                    "initiativeId": a["initiativeId"],
+                    "month": a["month"],
+                    "fte": a["fte"]
+                })
+                allocations_count += 1
+            continue
+
         for person_alloc in val["people"]:
             person_name = person_alloc["person"]
             
