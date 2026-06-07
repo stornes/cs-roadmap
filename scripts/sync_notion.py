@@ -28,18 +28,74 @@ headers = {
 cycle_id = "2026-H2"
 
 # Parse horizon string into concrete dates
+# Parse horizon string into concrete dates
 def parse_horizon(horizon):
-    h = horizon.lower()
+    h = horizon.lower().replace("–", "-") # normalize dashes
+    
+    # 2027 or deferred/unscheduled
+    if "2027" in h or "unscheduled" in h or "tbd" in h:
+        return None, None
+        
     start, end = None, None
-    if "q3" in h:
+    
+    # Check for spans across Q3 and Q4
+    if "q3-q4" in h or "q3 to q4" in h:
         start = "2026-07-01"
-        end = "2026-09-30"
-    elif "q4" in h:
-        start = "2026-10-01"
+        if "nov" in h:
+            end = "2026-11-30"
+        else:
+            end = "2026-12-31"
+    elif "jul-dec" in h or "jul - dec" in h:
+        start = "2026-07-01"
         end = "2026-12-31"
+    elif "aug-dec" in h:
+        start = "2026-08-01"
+        end = "2026-12-31"
+    elif "sep-dec" in h:
+        start = "2026-09-01"
+        end = "2026-12-31"
+    elif "jul + oct" in h:
+        start = "2026-07-01"
+        end = "2026-10-31"
+    elif "jul-oct" in h or "q3 (jul-oct)" in h:
+        start = "2026-07-01"
+        end = "2026-10-31"
+    elif "jul-nov" in h:
+        start = "2026-07-01"
+        end = "2026-11-30"
+    elif "sep-oct" in h:
+        start = "2026-09-01"
+        end = "2026-10-31"
     elif "h2" in h:
         start = "2026-07-01"
         end = "2026-12-31"
+    elif "q3 scope" in h:
+        start = "2026-07-01"
+        end = "2026-12-31" # "Q3 scope -> Q4 full" spans both
+    elif "q3" in h:
+        # Check if there is an oct or nov inside the parenthesis
+        if "oct" in h:
+            start = "2026-07-01"
+            if "nov" in h:
+                end = "2026-11-30"
+            else:
+                end = "2026-10-31"
+        elif "nov" in h:
+            start = "2026-07-01"
+            end = "2026-11-30"
+        else:
+            start = "2026-07-01"
+            end = "2026-09-30"
+    elif "q4" in h:
+        if "nov" in h:
+            start = "2026-11-01"
+            end = "2026-12-31"
+        else:
+            start = "2026-10-01"
+            end = "2026-12-31"
+    elif "jul" in h and "sep" in h:
+        start = "2026-07-01"
+        end = "2026-09-30"
     elif "jul" in h:
         start = "2026-07-01"
         end = "2026-07-31"
@@ -58,20 +114,6 @@ def parse_horizon(horizon):
     elif "dec" in h:
         start = "2026-12-01"
         end = "2026-12-31"
-    
-    # combinations
-    if "jul" in h and "sep" in h:
-        start = "2026-07-01"
-        end = "2026-09-30"
-    if "sep" in h and "oct" in h:
-        start = "2026-09-01"
-        end = "2026-10-31"
-    if "nov" in h and "dec" in h:
-        start = "2026-11-01"
-        end = "2026-12-31"
-    if "jul" in h and "oct" in h:
-        start = "2026-07-01"
-        end = "2026-10-31"
         
     return start, end
 
@@ -282,6 +324,54 @@ def run_sync(dry_run=False, only_id=None):
     mapping_path = "scripts/notion_mappings.json"
     with open(mapping_path, "r") as f:
         mappings = json.load(f)
+        
+    # 1.5. Fetch current page properties from Notion database to preserve existing New / Existing values
+    db_id = "28494165-72f7-800c-b1af-e98a49f6efa2"
+    url = f"https://api.notion.com/v1/databases/{db_id}/query"
+    current_new_existing = {}
+    has_more = True
+    start_cursor = None
+    
+    print("Fetching current page properties from Notion...")
+    while has_more:
+        payload = {}
+        if start_cursor:
+            payload["start_cursor"] = start_cursor
+        res = requests.post(url, headers=headers, json=payload)
+        if res.status_code == 200:
+            data = res.json()
+            for page in data.get("results", []):
+                pid = page["id"]
+                props = page.get("properties", {})
+                ne_prop = props.get("New / Existing", {}).get("select")
+                ne_name = ne_prop.get("name") if ne_prop else None
+                if ne_name:
+                    current_new_existing[pid] = ne_name
+            has_more = data.get("has_more", False)
+            start_cursor = data.get("next_cursor")
+        else:
+            print(f"Warning: Failed to fetch database pages from Notion: {res.status_code} - {res.text}")
+            has_more = False
+    print(f"Loaded {len(current_new_existing)} pages with New / Existing values from Notion.")
+
+    # Fallback classifications for New / Existing
+    init_new_or_existing = {
+        "H2-11": "New",
+        "H2-25": "New",
+        "H2-01": "New",
+        "H2-20": "New",
+        "H2-30": "Existing",
+        "H2-27": "Existing",
+        "H2-18": "Existing",
+        "H2-17": "New",
+        "H2-16": "New",
+        "H2-12": "Existing",
+        "H2-07": "Existing",
+        "H2-10": "New",
+        "H2-09": "Existing",
+        "H2-22": "Existing",
+        "H2-24": "New",
+    }
     
     # 2. Fetch Firestore initiatives and conflicts
     fs_inits = {}
@@ -348,6 +438,21 @@ def run_sync(dry_run=False, only_id=None):
             "multi_select": [{"name": q} for q in quarters]
         }
         
+        # Determine New / Existing value (preserve if already set on Notion, else use fallback map)
+        norm_page_id = notion_page_id.replace("-", "")
+        existing_val = None
+        for pid, pval in current_new_existing.items():
+            if pid.replace("-", "") == norm_page_id:
+                existing_val = pval
+                break
+        
+        new_existing_val = existing_val if existing_val else init_new_or_existing.get(fs_init_id, "New")
+        properties["New / Existing"] = {
+            "select": {
+                "name": new_existing_val
+            }
+        }
+        
         if start_date:
             properties["Timeline"] = {
                 "date": {
@@ -383,6 +488,7 @@ def run_sync(dry_run=False, only_id=None):
             print(f"  RAG: {notion_rag}")
             print(f"  Timeline: {start_date} to {end_date}")
             print(f"  Quarter: {', '.join(quarters)}")
+            print(f"  New / Existing: {new_existing_val}")
             print(f"  Description: {parsed_conf['description'][:60]}...")
             print(f"  Delivery (Deliveries): {parsed_conf['deliveries'][:60]}...")
             print(f"  Expected impact (OKRs):\n{parsed_conf['success']}")
@@ -391,6 +497,7 @@ def run_sync(dry_run=False, only_id=None):
             print(f"  RAG: {notion_rag}")
             print(f"  Timeline: {start_date} to {end_date}")
             print(f"  Quarter: {', '.join(quarters)}")
+            print(f"  New / Existing: {new_existing_val}")
             
         # Handle Warning Comment
         comment_text = get_sync_comment(fs_init_id, fs_init, has_conflict)
