@@ -69,5 +69,9 @@ service cloud.firestore {
       allow create: if isDomainUser(); // Anyone can append audit logs
       allow update, delete: if false; // Audit logs are immutable
     }
+    match /documents/{id} {
+      allow read: if isDomainUser();
+      allow write: if isEditorOrAdmin();
+    }
   }
 }
