@@ -8,7 +8,7 @@ db = firestore.client()
 
 # Stream B initiatives
 stream_b_inits = ["H2-18", "H2-17", "H2-16", "H2-07", "H2-10", "H2-12", "H2-13", "H2-14"]
-months = ["Aug", "Sep", "Oct", "Nov", "Dec"]
+months = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 # Get all allocations
 docs = db.collection("allocations").where("cycleId", "==", "2026-H2").stream()

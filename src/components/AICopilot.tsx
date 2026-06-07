@@ -173,7 +173,7 @@ export const AICopilot: React.FC<AICopilotProps> = ({
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
   const [lastSuggestedState, setLastSuggestedState] = useState<string>('');
 
-  const activeMonths = ["Aug", "Sep", "Oct", "Nov", "Dec"];
+  const activeMonths = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   // Scroll to bottom on new messages
   useEffect(() => {

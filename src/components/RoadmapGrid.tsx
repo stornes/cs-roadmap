@@ -448,7 +448,7 @@ export const RoadmapGrid: React.FC<RoadmapGridProps> = ({
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
                 {people.filter(p => p.stream === selectedInit.stream).map(person => {
                   const personAlloc = editAllocations[person.id] || { Jul: 0, Aug: 0, Sep: 0, Oct: 0, Nov: 0, Dec: 0 };
-                  const activeMonths = ["Aug", "Sep", "Oct", "Nov", "Dec"];
+                  const activeMonths = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
                   return (
                     <div key={person.id} className="p-3 bg-gray-950/40 rounded-lg border border-white/5">

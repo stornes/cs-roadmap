@@ -136,6 +136,15 @@ def seed_db():
             # Seed Kev's roadmap directly using the correct allocations
             print("Seeding Stream B allocations (Kev's roadmap)...")
             stream_b_allocations = [
+                # July (Total: 4.0 FTE)
+                {"personId": "ismail", "initiativeId": "H2-18", "month": "Jul", "fte": 0.5},
+                {"personId": "ismail", "initiativeId": "H2-16", "month": "Jul", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-18", "month": "Jul", "fte": 0.5},
+                {"personId": "kev", "initiativeId": "H2-17", "month": "Jul", "fte": 0.5},
+                {"personId": "borrowed_dc", "initiativeId": "H2-17", "month": "Jul", "fte": 1.25},
+                {"personId": "borrowed_dc", "initiativeId": "H2-30", "month": "Jul", "fte": 0.25},
+                {"personId": "borrowed_dc", "initiativeId": "H2-23", "month": "Jul", "fte": 0.5},
+
                 # August (Total: 4.0 FTE)
                 {"personId": "ismail", "initiativeId": "H2-18", "month": "Aug", "fte": 0.5},
                 {"personId": "ismail", "initiativeId": "H2-16", "month": "Aug", "fte": 0.5},

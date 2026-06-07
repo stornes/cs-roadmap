@@ -80,7 +80,7 @@ export default function App() {
   const [newConflictRec, setNewConflictRec] = useState('');
   const [newConflictOwner, setNewConflictOwner] = useState('');
 
-  const activeMonths = ["Aug", "Sep", "Oct", "Nov", "Dec"];
+  const activeMonths = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   // 1. Authenticate user and fetch role
   useEffect(() => {

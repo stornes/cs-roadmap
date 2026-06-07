@@ -59,7 +59,7 @@ export const useRecompute = (
 ) => {
   return useMemo(() => {
     // 1. Calculate Utilisation and Headroom per Stream per Month (Aug-Dec 2026)
-    const activeMonths = ["Aug", "Sep", "Oct", "Nov", "Dec"];
+    const activeMonths = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const streamUtilisation: Record<string, Record<string, number>> = {};
     const streamHeadroom: Record<string, Record<string, number>> = {};
 
@@ -131,7 +131,7 @@ export const useRecompute = (
     initiatives.forEach(init => {
       // Find all unique months where this initiative has allocations > 0
       const activeAllocMonths = allocations
-        .filter(a => a.initiativeId === init.id && a.fte > 0 && a.month !== 'Jul')
+        .filter(a => a.initiativeId === init.id && a.fte > 0)
         .map(a => a.month);
       
       initDuration[init.id] = Math.max(1, new Set(activeAllocMonths).size); // default to at least 1 month if not allocated but in plan
