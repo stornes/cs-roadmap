@@ -99,10 +99,10 @@
         "Kirill (QA)"
       ],
       "capacityByMonth": {
-        "Jul": 0.0,
-        "Aug": 5.0,
-        "Sep": 5.0,
-        "Oct": 5.0,
+        "Jul": 5.5,
+        "Aug": 9.5,
+        "Sep": 9.5,
+        "Oct": 7.0,
         "Nov": 5.0,
         "Dec": 5.0
       },
@@ -114,10 +114,8 @@
         "Nov": 2.0,
         "Dec": 2.0
       },
-      "position": "Per Jonas/Kato grid. Partner API locked. Net spare Jul/Nov/Dec; over Aug(-1), Sep(-2), Oct(-1). Platform folded in (Access & Runtime + Enablement).",
-      "holidayMonths": [
-        "Jul"
-      ]
+      "position": "Per Jonas/Kato grid v3. Partner API locked. Active in July since some team members (Jyhe, Lasse, Sylwester, Darren, Halvor, Ove) work in July.",
+      "holidayMonths": []
     }
   ],
   "people": [
@@ -622,13 +620,13 @@
       "id": "H2-05",
       "name": "SFS / Fidelio stabilisation",
       "stream": "C",
-      "priority": "P3",
-      "status": "De-prioritised → 2027",
-      "horizon": "2027",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Sep esforzo",
       "lead": "Jonas + Kato",
       "dependencies": [],
       "source": "Jonas/Kato grid",
-      "notes": "Sep firefight — was deferred 2027"
+      "notes": "September firefight — active in H2"
     },
     {
       "id": "WS3",

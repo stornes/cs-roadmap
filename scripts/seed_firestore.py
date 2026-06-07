@@ -208,6 +208,95 @@ def seed_db():
                 allocations_count += 1
             continue
 
+        if stream_id == "C":
+            # Seed updated Backend (Stream C) directly using the correct allocations
+            print("Seeding Stream C allocations (updated Backend roadmap)...")
+            stream_c_allocations = [
+                # July
+                {"personId": "jyhe", "initiativeId": "H2-22", "month": "Jul", "fte": 1.0},
+                {"personId": "lasse", "initiativeId": "H2-22", "month": "Jul", "fte": 0.5},
+                {"personId": "lasse", "initiativeId": "H2-23", "month": "Jul", "fte": 0.5},
+                {"personId": "sylwester", "initiativeId": "H2-03", "month": "Jul", "fte": 1.0},
+                {"personId": "darren", "initiativeId": "H2-23", "month": "Jul", "fte": 0.25},
+                {"personId": "halvor", "initiativeId": "H2-23", "month": "Jul", "fte": 0.5},
+                {"personId": "ove", "initiativeId": "H2-23", "month": "Jul", "fte": 0.5},
+                {"personId": "darren", "initiativeId": "H2-20", "month": "Jul", "fte": 0.5},
+                {"personId": "halvor", "initiativeId": "H2-20", "month": "Jul", "fte": 0.5},
+                {"personId": "kirill", "initiativeId": "H2-23", "month": "Jul", "fte": 1.0},
+
+                # August
+                {"personId": "jyhe", "initiativeId": "H2-22", "month": "Aug", "fte": 1.0},
+                {"personId": "lasse", "initiativeId": "H2-21", "month": "Aug", "fte": 0.5},
+                {"personId": "lasse", "initiativeId": "H2-23", "month": "Aug", "fte": 0.5},
+                {"personId": "jonas", "initiativeId": "H2-24", "month": "Aug", "fte": 1.0},
+                {"personId": "kato", "initiativeId": "H2-24", "month": "Aug", "fte": 1.0},
+                {"personId": "oyvind", "initiativeId": "H2-24", "month": "Aug", "fte": 1.0},
+                {"personId": "erik", "initiativeId": "B2X", "month": "Aug", "fte": 1.0},
+                {"personId": "darren", "initiativeId": "WS3", "month": "Aug", "fte": 1.0},
+                {"personId": "halvor", "initiativeId": "H2-23", "month": "Aug", "fte": 0.5},
+                {"personId": "ove", "initiativeId": "H2-23", "month": "Aug", "fte": 0.5},
+                {"personId": "sylwester", "initiativeId": "H2-23", "month": "Aug", "fte": 0.5},
+                {"personId": "halvor", "initiativeId": "H2-20", "month": "Aug", "fte": 0.5},
+                {"personId": "sylwester", "initiativeId": "H2-20", "month": "Aug", "fte": 0.5},
+                {"personId": "kirill", "initiativeId": "H2-23", "month": "Aug", "fte": 1.0},
+
+                # September
+                {"personId": "jyhe", "initiativeId": "H2-22", "month": "Sep", "fte": 1.0},
+                {"personId": "lasse", "initiativeId": "SF-sup", "month": "Sep", "fte": 1.0},
+                {"personId": "jonas", "initiativeId": "H2-05", "month": "Sep", "fte": 1.0},
+                {"personId": "kato", "initiativeId": "H2-05", "month": "Sep", "fte": 1.0},
+                {"personId": "oyvind", "initiativeId": "H2-05", "month": "Sep", "fte": 1.0},
+                {"personId": "erik", "initiativeId": "B2X", "month": "Sep", "fte": 1.0},
+                {"personId": "sylwester", "initiativeId": "H2-03", "month": "Sep", "fte": 1.0},
+                {"personId": "darren", "initiativeId": "H2-23", "month": "Sep", "fte": 0.5},
+                {"personId": "halvor", "initiativeId": "H2-23", "month": "Sep", "fte": 0.5},
+                {"personId": "ove", "initiativeId": "H2-23", "month": "Sep", "fte": 0.5},
+                {"personId": "kirill", "initiativeId": "H2-23", "month": "Sep", "fte": 1.0},
+
+                # October
+                {"personId": "jyhe", "initiativeId": "H2-22", "month": "Oct", "fte": 1.0},
+                {"personId": "lasse", "initiativeId": "SF-sup", "month": "Oct", "fte": 1.0},
+                {"personId": "jonas", "initiativeId": "H2-20", "month": "Oct", "fte": 1.0},
+                {"personId": "kato", "initiativeId": "H2-20", "month": "Oct", "fte": 1.0},
+                {"personId": "erik", "initiativeId": "B2X", "month": "Oct", "fte": 1.0},
+                {"personId": "darren", "initiativeId": "H2-23", "month": "Oct", "fte": 0.5},
+                {"personId": "halvor", "initiativeId": "H2-23", "month": "Oct", "fte": 0.5},
+                {"personId": "ove", "initiativeId": "H2-23", "month": "Oct", "fte": 0.5},
+                {"personId": "sylwester", "initiativeId": "H2-23", "month": "Oct", "fte": 0.5},
+                {"personId": "kirill", "initiativeId": "H2-23", "month": "Oct", "fte": 1.0},
+
+                # November
+                {"personId": "jyhe", "initiativeId": "H2-22", "month": "Nov", "fte": 1.0},
+                {"personId": "lasse", "initiativeId": "SF-sup", "month": "Nov", "fte": 1.0},
+                {"personId": "erik", "initiativeId": "B2X", "month": "Nov", "fte": 1.0},
+                {"personId": "darren", "initiativeId": "H2-23", "month": "Nov", "fte": 0.5},
+                {"personId": "halvor", "initiativeId": "H2-23", "month": "Nov", "fte": 0.5},
+                {"personId": "ove", "initiativeId": "H2-23", "month": "Nov", "fte": 0.5},
+                {"personId": "sylwester", "initiativeId": "H2-23", "month": "Nov", "fte": 0.5},
+                {"personId": "kirill", "initiativeId": "H2-23", "month": "Nov", "fte": 1.0},
+
+                # December
+                {"personId": "jyhe", "initiativeId": "H2-22", "month": "Dec", "fte": 1.0},
+                {"personId": "lasse", "initiativeId": "SF-sup", "month": "Dec", "fte": 1.0},
+                {"personId": "erik", "initiativeId": "B2X", "month": "Dec", "fte": 1.0},
+                {"personId": "darren", "initiativeId": "H2-23", "month": "Dec", "fte": 0.5},
+                {"personId": "halvor", "initiativeId": "H2-23", "month": "Dec", "fte": 0.5},
+                {"personId": "ove", "initiativeId": "H2-23", "month": "Dec", "fte": 0.5},
+                {"personId": "sylwester", "initiativeId": "H2-23", "month": "Dec", "fte": 0.5},
+                {"personId": "kirill", "initiativeId": "H2-23", "month": "Dec", "fte": 1.0}
+            ]
+            for a in stream_c_allocations:
+                alloc_id = f"{a['personId']}_{a['initiativeId']}_{a['month']}"
+                db.collection("allocations").document(alloc_id).set({
+                    "cycleId": cycle_id,
+                    "personId": a["personId"],
+                    "initiativeId": a["initiativeId"],
+                    "month": a["month"],
+                    "fte": a["fte"]
+                })
+                allocations_count += 1
+            continue
+
         for person_alloc in val["people"]:
             person_name = person_alloc["person"]
             
