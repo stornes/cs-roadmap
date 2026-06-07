@@ -129,8 +129,8 @@ def generate_preview():
             
         # Calculate proposed
         has_conflict = fs_init_id in conflict_inits
-        proposed_rag = map_rag_status(fs_init.get("status", ""), has_conflict)
         start_date, end_date = parse_horizon(fs_init.get("horizon", ""))
+        proposed_rag = map_rag_status(fs_init.get("status", ""), start_date=start_date, has_conflict=has_conflict)
         
         if start_date:
             proposed_timeline = f"{start_date} to {end_date}"

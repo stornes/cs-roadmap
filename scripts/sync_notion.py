@@ -173,13 +173,18 @@ def get_teams_from_confluence(text):
     return teams
 
 # Map Firestore status to Notion RAG status
-def map_rag_status(fs_status, has_conflict=False):
+def map_rag_status(fs_status, start_date=None, has_conflict=False):
+    if has_conflict:
+        return "Blocked"
+        
+    # If the start date is in the future (after 2026-06-07), then it is Not Started
+    # (Since we are in H2 2026 planning, and current date is June 7, 2026)
+    if start_date and start_date > "2026-06-07":
+        return "Not Started"
+        
     st = fs_status.lower()
     if "deferred" in st or "unscheduled" in st or "backlog" in st or "negotiable" in st:
         return "Not Started"
-    
-    if has_conflict:
-        return "Blocked"
     
     if "committed" in st or "in h2" in st:
         return "On track"
@@ -561,10 +566,6 @@ def run_sync(dry_run=False, only_id=None):
         # Match with Confluence row to populate description/deliveries/OKRs
         conf_row = match_firestore_to_confluence(fs_init_id, fs_init.get("name", ""), confluence_rows)
         
-        # Calculate RAG and Dates
-        has_conflict = fs_init_id in conflict_inits
-        notion_rag = map_rag_status(fs_init.get("status", ""), has_conflict)
-        
         # Try Confluence timeline first
         start_date, end_date = None, None
         if conf_row and len(conf_row) > 7:
@@ -573,6 +574,10 @@ def run_sync(dry_run=False, only_id=None):
         # Fall back to Firestore horizon if not found or TBC
         if not start_date or not end_date:
             start_date, end_date = parse_horizon(fs_init.get("horizon", ""))
+            
+        # Calculate RAG
+        has_conflict = fs_init_id in conflict_inits
+        notion_rag = map_rag_status(fs_init.get("status", ""), start_date=start_date, has_conflict=has_conflict)
         
         # Build update payload
         properties = {
