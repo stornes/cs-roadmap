@@ -25,3 +25,8 @@ dist-ssr
 
 # MCP config with live tokens (keep out of git)
 .mcp.json
+
+# Environment files with secrets
+.env
+mcp-server/.env
+
