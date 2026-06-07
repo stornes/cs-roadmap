@@ -154,6 +154,10 @@ def seed_db():
                         init_id = label_to_init.get(label, "H2-23") # default to BAU if not matched
                         
                         # Calculate fte. If split (e.g. "ARM assist + Ph2"), we allocate 0.5 to each
+                        # If the person is a delivery IC in Stream A, we scale down (0.4 instead of 0.5) to cap at 0.8 total FTE
+                        stream_a_people = ["pawel", "natasa", "miranda", "arthur"]
+                        is_stream_a = person_id in stream_a_people
+
                         if "+" in label:
                             parts = [p.strip() for p in label.split("+")]
                             for part in parts:
@@ -164,7 +168,7 @@ def seed_db():
                                     "personId": person_id,
                                     "initiativeId": part_init,
                                     "month": m,
-                                    "fte": 0.5
+                                    "fte": 0.4 if is_stream_a else 0.5
                                 })
                                 allocations_count += 1
                         else:
@@ -174,7 +178,7 @@ def seed_db():
                                     "personId": person_id,
                                     "initiativeId": init_id,
                                     "month": m,
-                                    "fte": 1.0 if person_id != "ove" else 0.5
+                                    "fte": 0.8 if is_stream_a else (1.0 if person_id != "ove" else 0.5)
                             })
                             allocations_count += 1
 
