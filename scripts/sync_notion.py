@@ -445,6 +445,9 @@ def run_sync(dry_run=False, only_id=None):
         "H2-04": "New",
         "H2-05": "New",
         "WS3": "New",
+        "H2-13": "New",
+        "H2-31": "New",
+        "H2-33": "New",
     }
     
     # User confirmed team assignments to avoid auto-calculation or guessing
@@ -469,6 +472,9 @@ def run_sync(dry_run=False, only_id=None):
         "H2-04": ["Backend Team"],
         "H2-05": ["Backend Team"],
         "WS3": ["Backend Team"],
+        "H2-13": ["SF Marketing & Analytics Operations"],
+        "H2-31": ["SF Marketing & Analytics Operations"],
+        "H2-33": ["SF Marketing & Analytics Operations"],
     }
     
     # 2. Fetch Firestore initiatives and conflicts
