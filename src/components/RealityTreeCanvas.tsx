@@ -245,7 +245,7 @@ export const RealityTreeCanvas: React.FC<RealityTreeCanvasProps> = ({
       {/* React Flow Viewport */}
       <div className="flex-1 h-full rounded-xl overflow-hidden glass border border-white/5 relative">
         {isEditorOrAdmin && (
-          <div className="absolute top-4 left-4 z-10 flex gap-2">
+          <div className="absolute top-4 left-4 z-20 flex gap-2">
             <button
               onClick={handleAddNode}
               className="py-2 px-3 bg-gray-900 border border-white/10 rounded-lg text-xs font-semibold text-white flex items-center gap-1.5 hover:bg-gray-800 cursor-pointer"
