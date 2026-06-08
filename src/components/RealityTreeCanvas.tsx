@@ -67,6 +67,7 @@ export const RealityTreeCanvas: React.FC<RealityTreeCanvasProps> = ({
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   
   // Node editor modal/panel state
   const [editLabel, setEditLabel] = useState('');
@@ -155,9 +156,76 @@ export const RealityTreeCanvas: React.FC<RealityTreeCanvasProps> = ({
   // Click node to open edit panel
   const onNodeClick = useCallback((_: any, node: Node) => {
     setSelectedNodeId(node.id);
+    setSelectedEdgeId(null);
     setEditLabel(node.data.label || '');
     setEditType(node.data.type || 'effect');
   }, []);
+
+  // Edge click handler
+  const onEdgeClick = useCallback((_: any, edge: Edge) => {
+    setSelectedEdgeId(edge.id);
+    setSelectedNodeId(null);
+  }, []);
+
+  // Pane click handler to clear selection
+  const onPaneClick = useCallback(() => {
+    setSelectedNodeId(null);
+    setSelectedEdgeId(null);
+  }, []);
+
+  // Delete edge via sidebar panel
+  const handleDeleteEdge = useCallback(() => {
+    if (!selectedEdgeId || !isEditorOrAdmin) return;
+    
+    const edgeToDelete = edges.find(e => e.id === selectedEdgeId);
+    if (!edgeToDelete) return;
+    
+    setEdges(eds => {
+      const updated = eds.filter(e => e.id !== selectedEdgeId);
+      saveGraph(nodes, updated);
+      onAddAuditLog('tree_edge_delete', { kind, edgeId: selectedEdgeId, from: edgeToDelete.source, to: edgeToDelete.target });
+      return updated;
+    });
+    setSelectedEdgeId(null);
+  }, [selectedEdgeId, edges, nodes, isEditorOrAdmin, kind, setEdges, onAddAuditLog]);
+
+  // Handle keyboard edge deletions
+  const onEdgesDelete = useCallback((edgesToDelete: Edge[]) => {
+    if (!isEditorOrAdmin) return;
+    setEdges(eds => {
+      const updated = eds.filter(e => !edgesToDelete.some(etd => etd.id === e.id));
+      saveGraph(nodes, updated);
+      edgesToDelete.forEach(e => {
+        onAddAuditLog('tree_edge_delete', { kind, edgeId: e.id, from: e.source, to: e.target });
+      });
+      return updated;
+    });
+    if (selectedEdgeId && edgesToDelete.some(e => e.id === selectedEdgeId)) {
+      setSelectedEdgeId(null);
+    }
+  }, [nodes, isEditorOrAdmin, kind, selectedEdgeId, setEdges, onAddAuditLog]);
+
+  // Handle keyboard node deletions
+  const onNodesDelete = useCallback((nodesToDelete: Node[]) => {
+    if (!isEditorOrAdmin) return;
+    setNodes(nds => {
+      const updatedNodes = nds.filter(n => !nodesToDelete.some(ntd => ntd.id === n.id));
+      setEdges(eds => {
+        const updatedEdges = eds.filter(e => 
+          !nodesToDelete.some(n => n.id === e.source || n.id === e.target)
+        );
+        saveGraph(updatedNodes, updatedEdges);
+        return updatedEdges;
+      });
+      nodesToDelete.forEach(n => {
+        onAddAuditLog('tree_node_delete', { kind, nodeId: n.id });
+      });
+      return updatedNodes;
+    });
+    if (selectedNodeId && nodesToDelete.some(n => n.id === selectedNodeId)) {
+      setSelectedNodeId(null);
+    }
+  }, [isEditorOrAdmin, kind, selectedNodeId, setNodes, setEdges, onAddAuditLog]);
 
   // Update node label/type
   const handleUpdateNode = () => {
@@ -275,6 +343,10 @@ export const RealityTreeCanvas: React.FC<RealityTreeCanvasProps> = ({
             nodeTypes={nodeTypes}
             onNodeClick={onNodeClick}
             onNodeDragStop={handleNodeDragStop}
+            onEdgeClick={onEdgeClick}
+            onPaneClick={onPaneClick}
+            onEdgesDelete={onEdgesDelete}
+            onNodesDelete={onNodesDelete}
             fitView
           >
             <Background color="#374151" gap={16} size={1} />
@@ -356,6 +428,54 @@ export const RealityTreeCanvas: React.FC<RealityTreeCanvasProps> = ({
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>Apply</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Selected Edge Panel */}
+      {selectedEdgeId && (
+        <div className="w-[320px] glass border border-white/10 p-5 flex flex-col rounded-xl shadow-2xl h-fit z-20 animate-in slide-in-from-right duration-250">
+          <div className="flex items-center justify-between pb-3 border-b border-white/5 mb-4">
+            <h3 className="font-display font-semibold text-white">Edge Properties</h3>
+            <button
+              onClick={() => setSelectedEdgeId(null)}
+              className="text-xs text-gray-400 hover:text-white cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {(() => {
+              const edge = edges.find(e => e.id === selectedEdgeId);
+              if (!edge) return null;
+              const sourceNode = nodes.find(n => n.id === edge.source);
+              const targetNode = nodes.find(n => n.id === edge.target);
+              return (
+                <div className="text-xs text-gray-400 space-y-2.5 bg-gray-900/50 p-3 rounded-lg border border-white/5">
+                  <div>
+                    <strong className="text-gray-300 block mb-0.5">From (Cause):</strong>
+                    <span className="text-white text-sm">{sourceNode?.data.label || sourceNode?.id || 'Unknown'}</span>
+                  </div>
+                  <div>
+                    <strong className="text-gray-300 block mb-0.5">To (Effect):</strong>
+                    <span className="text-white text-sm">{targetNode?.data.label || targetNode?.id || 'Unknown'}</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {isEditorOrAdmin && (
+              <div className="pt-2">
+                <button
+                  onClick={handleDeleteEdge}
+                  className="w-full py-2 bg-red-950/20 border border-red-500/30 text-red-300 rounded-lg hover:bg-red-900/20 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete Edge</span>
                 </button>
               </div>
             )}

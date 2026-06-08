@@ -900,7 +900,7 @@ export default function App() {
                 <div>
                   <h1 className="text-2xl font-display font-bold text-white">Reality Trees Canvas Diagram</h1>
                   <p className="text-sm text-gray-400 mt-1">
-                    Map underlying issues in the Current Reality Tree or project injections in the Future Reality Tree.
+                    Map underlying issues in the Problem Tree or project injections in the Solution Tree.
                   </p>
                 </div>
                 <div className="flex border border-white/10 rounded-lg overflow-hidden bg-gray-950/60 p-1">
@@ -910,7 +910,7 @@ export default function App() {
                       realityTreeKind === 'CRT' ? 'bg-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    Current Reality (CRT)
+                    Problem Tree
                   </button>
                   <button
                     onClick={() => setRealityTreeKind('FRT')}
@@ -918,7 +918,7 @@ export default function App() {
                       realityTreeKind === 'FRT' ? 'bg-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    Future Reality (FRT)
+                    Solution Tree
                   </button>
                 </div>
               </div>
