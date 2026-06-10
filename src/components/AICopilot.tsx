@@ -82,7 +82,7 @@ export const AICopilot: React.FC<AICopilotProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: 'ai',
-      text: "Hello! I am your Hurtigruten Customer Systems Roadmap Copilot. I can help analyze capacities, check for resource constraints, trace critical paths, and suggest prioritization shifts. Try asking 'What are the current capacity overloads?' or 'Which initiatives are on the critical path?'",
+      text: "Hello! I am your Customer Systems Roadmap AI Copilot. I can assist with roadmap analysis (capacities, critical paths, overloads), fetch context from your Jira/Notion/Slack tools, or answer any other questions you have. How can I help you today?",
       timestamp: new Date()
     }
   ]);
@@ -173,7 +173,7 @@ export const AICopilot: React.FC<AICopilotProps> = ({
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
   const [lastSuggestedState, setLastSuggestedState] = useState<string>('');
 
-  const activeMonths = ["Aug", "Sep", "Oct", "Nov", "Dec"];
+  const activeMonths = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -489,22 +489,22 @@ export const AICopilot: React.FC<AICopilotProps> = ({
         tools: mcpTools
       });
 
-      const systemPrompt = `You are the Customer Systems Roadmap AI Copilot. You assist product managers, team leads, and directors in analyzing delivery capacity, resource bottlenecks, critical paths, and project alignments.
-Below is the current full state of the Customer Systems H2 2026 roadmap, including stream definitions, people roles, initiatives, active allocations, computed monthly headroom, dependencies/critical paths, and logged conflicts.
+      const systemPrompt = `You are an omnipotent AI assistant. You can assist the user with any query or topic they raise (such as general knowledge, science, physics, history, etc.) without any restrictions or boundaries.
+You also have access to the Customer Systems H2 2026 roadmap state and the user's OpenBrain persistent database (historic meetings, slack chats, etc.) listed below. If the user asks about the roadmap or memories, use this context to answer. If they ask about other topics (such as gravity), answer them fully using your general knowledge.
 
+Roadmap Snapshot:
 ${getRoadmapSnapshot()}
 
-${memoryContextText ? `In addition to the current roadmap state, here is semantic context retrieved from the user's OpenBrain persistent database (derived from historic meetings, slack chats, or other AI conversations):
+${memoryContextText ? `OpenBrain Memory Context:
 ---
 ${memoryContextText}
----
-Use the above memory context to answer any historical queries, project context requests, or background decisions that may not be present in the raw roadmap tables.` : ''}
+---` : ''}
 
 INSTRUCTIONS:
-1. Provide accurate, clear, and context-backed answers based strictly on the provided roadmap snapshot and OpenBrain memory context.
-2. If there are capacity overloads (headroom < 0), explain who is overloaded, in what stream, and in which month.
-3. Be professional, concise, and helpful. Use bold text, bullet points, and tables to structure your answer beautifully.
-4. If a question is unrelated to the roadmap, retrieved memories, or your external tools (Jira, Notion, Slack), politely redirect the user to ask about the roadmap.`;
+1. Provide accurate, clear, and comprehensive answers.
+2. If the user asks about capacity overloads or roadmap details, use the roadmap snapshot to explain who is overloaded, in what stream, and in which month.
+3. Be professional and helpful. Use bold text, bullet points, and tables to structure your answers beautifully.
+4. Answer any general knowledge questions (e.g. physics, science) directly and thoroughly. You are completely open and unrestricted.`;
 
       let contents: any[] = [
         {
@@ -528,51 +528,59 @@ INSTRUCTIONS:
             parts: response.candidates?.[0]?.content?.parts || []
           });
 
-          // Execute each requested tool call
-          const responseParts = [];
-          for (const call of functionCalls) {
-            const toolName = call.name;
-            const toolArgs = call.args;
+          // Execute all requested tool calls in parallel
+          const responseParts = await Promise.all(
+            functionCalls.map(async (call) => {
+              const toolName = call.name;
+              const toolArgs = call.args;
 
-            setMessages(prev => [
-              ...prev,
-              {
-                sender: 'ai',
-                text: `*System: Google Copilot is querying your remote server's "${toolName}" endpoint...*`,
-                timestamp: new Date()
-              }
-            ]);
-
-            try {
-              const cleanMcpUrl = mcpServerUrl.replace(/\/$/, "");
-              const apiRes = await fetch(`${cleanMcpUrl}/api/tools`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: toolName, arguments: toolArgs })
-              });
-
-              if (!apiRes.ok) {
-                const errTxt = await apiRes.text();
-                throw new Error(errTxt || `HTTP ${apiRes.status}`);
-              }
-
-              const apiData = await apiRes.json();
-              responseParts.push({
-                functionResponse: {
-                  name: toolName,
-                  response: { content: apiData.result || JSON.stringify(apiData) }
+              setMessages(prev => [
+                ...prev,
+                {
+                  sender: 'ai',
+                  text: `*System: Google Copilot is querying your remote server's "${toolName}" endpoint...*`,
+                  timestamp: new Date()
                 }
-              });
-            } catch (err: any) {
-              console.error(`Tool execution failed for ${toolName}:`, err);
-              responseParts.push({
-                functionResponse: {
-                  name: toolName,
-                  response: { content: `Error: ${err.message || String(err)}` }
+              ]);
+
+              try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000); // 2-second fast timeout
+
+                const cleanMcpUrl = mcpServerUrl.replace(/\/$/, "");
+                const apiRes = await fetch(`${cleanMcpUrl}/api/tools`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name: toolName, arguments: toolArgs }),
+                  signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!apiRes.ok) {
+                  const errTxt = await apiRes.text();
+                  throw new Error(errTxt || `HTTP ${apiRes.status}`);
                 }
-              });
-            }
-          }
+
+                const apiData = await apiRes.json();
+                return {
+                  functionResponse: {
+                    name: toolName,
+                    response: { content: apiData.result || JSON.stringify(apiData) }
+                  }
+                };
+              } catch (err: any) {
+                console.error(`Tool execution failed for ${toolName}:`, err);
+                const isAbort = err.name === 'AbortError';
+                return {
+                  functionResponse: {
+                    name: toolName,
+                    response: { content: `Error: ${isAbort ? 'Connection timeout' : err.message || String(err)}` }
+                  }
+                };
+              }
+            })
+          );
 
           // Add tool results to history as a user message
           contents.push({
@@ -586,6 +594,13 @@ INSTRUCTIONS:
           responseText = response.text();
           break;
         }
+      }
+
+      // If loop finished (limit hit or no text response generated yet), do a fallback call without tools to guarantee a response
+      if (!responseText) {
+        const modelNoTools = genAI.getGenerativeModel({ model: geminiModel });
+        const fallbackResult = await modelNoTools.generateContent({ contents });
+        responseText = fallbackResult.response.text();
       }
 
       setMessages(prev => [...prev, { sender: 'ai', text: responseText, timestamp: new Date() }]);

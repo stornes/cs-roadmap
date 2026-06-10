@@ -50,9 +50,27 @@ body {
   border: 2px solid #9ca3af !important;
 }
 
+.react-flow__edge {
+  cursor: pointer !important;
+}
+
 .react-flow__edge-path {
   stroke: #4b5563 !important;
   stroke-width: 2 !important;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
+  cursor: pointer !important;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #9ca3af !important;
+  stroke-width: 3 !important;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #a855f7 !important; /* var(--color-brand-purple) */
+  stroke-width: 4.5 !important;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.9));
 }
 
 /* Custom Scrollbars */

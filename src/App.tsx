@@ -80,7 +80,7 @@ export default function App() {
   const [newConflictRec, setNewConflictRec] = useState('');
   const [newConflictOwner, setNewConflictOwner] = useState('');
 
-  const activeMonths = ["Aug", "Sep", "Oct", "Nov", "Dec"];
+  const activeMonths = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   // 1. Authenticate user and fetch role
   useEffect(() => {
@@ -200,7 +200,7 @@ export default function App() {
   }, [currentUser]);
 
   // 3. Perform live computations (RAG, Headroom, Critical Path)
-  const recomputeData = useRecompute(streams, initiatives, allocations, milestones);
+  const recomputeData = useRecompute(streams, initiatives, allocations, milestones, people);
 
   // 4. Mutation handlers with audit logs
   const handleAddAuditLog = async (action: string, details: any) => {
@@ -896,11 +896,11 @@ export default function App() {
 
           {activeTab === 'trees' && (
             <div className="flex flex-col h-full gap-4 relative">
-              <div className="flex items-center justify-between pb-2">
+              <div className="flex items-center justify-between pb-2 relative z-30">
                 <div>
                   <h1 className="text-2xl font-display font-bold text-white">Reality Trees Canvas Diagram</h1>
                   <p className="text-sm text-gray-400 mt-1">
-                    Map underlying issues in the Current Reality Tree or project injections in the Future Reality Tree.
+                    Map underlying issues in the Problem Tree or project injections in the Solution Tree.
                   </p>
                 </div>
                 <div className="flex border border-white/10 rounded-lg overflow-hidden bg-gray-950/60 p-1">
@@ -910,7 +910,7 @@ export default function App() {
                       realityTreeKind === 'CRT' ? 'bg-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    Current Reality (CRT)
+                    Problem Tree
                   </button>
                   <button
                     onClick={() => setRealityTreeKind('FRT')}
@@ -918,7 +918,7 @@ export default function App() {
                       realityTreeKind === 'FRT' ? 'bg-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    Future Reality (FRT)
+                    Solution Tree
                   </button>
                 </div>
               </div>

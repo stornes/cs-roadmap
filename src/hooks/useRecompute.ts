@@ -35,8 +35,14 @@ export interface Milestone {
   initiativeId: string;
 }
 
-
-
+export interface Person {
+  id: string;
+  name: string;
+  role: string;
+  stream: string;
+  isDelivery: boolean;
+  fteFactor: number;
+}
 
 const getMonthName = (index: number): string => {
   const baseMonth = 7; // August
@@ -48,11 +54,12 @@ export const useRecompute = (
   streams: Stream[],
   initiatives: Initiative[],
   allocations: Allocation[],
-  milestones: Milestone[]
+  milestones: Milestone[],
+  people: Person[]
 ) => {
   return useMemo(() => {
     // 1. Calculate Utilisation and Headroom per Stream per Month (Aug-Dec 2026)
-    const activeMonths = ["Aug", "Sep", "Oct", "Nov", "Dec"];
+    const activeMonths = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const streamUtilisation: Record<string, Record<string, number>> = {};
     const streamHeadroom: Record<string, Record<string, number>> = {};
 
@@ -70,10 +77,17 @@ export const useRecompute = (
       initToStream[init.id] = init.stream;
     });
 
+    // Map person ID to isDelivery flag
+    const personIsDelivery: Record<string, boolean> = {};
+    people.forEach(p => {
+      personIsDelivery[p.id] = p.isDelivery;
+    });
+
     // Aggregate allocations
     allocations.forEach(alloc => {
       const streamId = initToStream[alloc.initiativeId];
-      if (streamId && streamUtilisation[streamId] && activeMonths.includes(alloc.month)) {
+      const isDelivery = personIsDelivery[alloc.personId] !== false; // default to true if person not found
+      if (streamId && streamUtilisation[streamId] && activeMonths.includes(alloc.month) && isDelivery) {
         streamUtilisation[streamId][alloc.month] += alloc.fte;
       }
     });
@@ -117,7 +131,7 @@ export const useRecompute = (
     initiatives.forEach(init => {
       // Find all unique months where this initiative has allocations > 0
       const activeAllocMonths = allocations
-        .filter(a => a.initiativeId === init.id && a.fte > 0 && a.month !== 'Jul')
+        .filter(a => a.initiativeId === init.id && a.fte > 0)
         .map(a => a.month);
       
       initDuration[init.id] = Math.max(1, new Set(activeAllocMonths).size); // default to at least 1 month if not allocated but in plan
@@ -232,5 +246,5 @@ export const useRecompute = (
         dates
       }
     };
-  }, [streams, initiatives, allocations, milestones]);
+  }, [streams, initiatives, allocations, milestones, people]);
 };

@@ -61,7 +61,7 @@
         "Ismail"
       ],
       "capacityByMonth": {
-        "Jul": 0.0,
+        "Jul": 2.0,
         "Aug": 3.0,
         "Sep": 3.0,
         "Oct": 3.0,
@@ -76,10 +76,8 @@
         "Nov": 0.5,
         "Dec": 0.5
       },
-      "position": "Workload capped at 3 FTE/mo (Kev + Guljar + Ismail) — now within capacity. Consent, Preference Centre, AirPort Express and Voice of Customer de-prioritised to 2027 to fit. A dedicated Data Engineer would restore that scope.",
-      "holidayMonths": [
-        "Jul"
-      ]
+      "position": "Workload capped at 3 FTE/mo (Kev + Guljar + Ismail). Consent, Preference Centre, AirPort Express and Voice of Customer are active in H2 since UK-based team members (Kev and Ismail) work in July.",
+      "holidayMonths": []
     },
     {
       "id": "C",
@@ -101,10 +99,10 @@
         "Kirill (QA)"
       ],
       "capacityByMonth": {
-        "Jul": 0.0,
-        "Aug": 5.0,
-        "Sep": 5.0,
-        "Oct": 5.0,
+        "Jul": 5.5,
+        "Aug": 9.5,
+        "Sep": 9.5,
+        "Oct": 7.0,
         "Nov": 5.0,
         "Dec": 5.0
       },
@@ -116,10 +114,8 @@
         "Nov": 2.0,
         "Dec": 2.0
       },
-      "position": "Per Jonas/Kato grid. Partner API locked. Net spare Jul/Nov/Dec; over Aug(-1), Sep(-2), Oct(-1). Platform folded in (Access & Runtime + Enablement).",
-      "holidayMonths": [
-        "Jul"
-      ]
+      "position": "Per Jonas/Kato grid v3. Partner API locked. Active in July since some team members (Jyhe, Lasse, Sylwester, Darren, Halvor, Ove) work in July.",
+      "holidayMonths": []
     }
   ],
   "people": [
@@ -448,8 +444,8 @@
       "id": "H2-07",
       "name": "Marketing Consent + Double Opt-In",
       "stream": "B",
-      "priority": "P3",
-      "status": "De-prioritised → 2027",
+      "priority": "P1",
+      "status": "Committed",
       "horizon": "Q4 (Nov–Dec)",
       "lead": "Kev / SFMC (+SF S&S)",
       "dependencies": [],
@@ -460,8 +456,8 @@
       "id": "H2-10",
       "name": "Preference Centre (Web/Email)",
       "stream": "B",
-      "priority": "P3",
-      "status": "De-prioritised → 2027",
+      "priority": "P1",
+      "status": "Committed",
       "horizon": "Q4 (Nov–Dec)",
       "lead": "Kev / SFMC",
       "dependencies": [
@@ -477,8 +473,8 @@
       "id": "H2-12",
       "name": "AirPort Express Automation B2B",
       "stream": "B",
-      "priority": "P3",
-      "status": "De-prioritised → 2027",
+      "priority": "P1",
+      "status": "Committed",
       "horizon": "Dec →",
       "lead": "Kev / SFMC",
       "dependencies": [],
@@ -624,13 +620,13 @@
       "id": "H2-05",
       "name": "SFS / Fidelio stabilisation",
       "stream": "C",
-      "priority": "P3",
-      "status": "De-prioritised → 2027",
-      "horizon": "2027",
+      "priority": "P1",
+      "status": "Committed",
+      "horizon": "Sep esforzo",
       "lead": "Jonas + Kato",
       "dependencies": [],
       "source": "Jonas/Kato grid",
-      "notes": "Sep firefight — was deferred 2027"
+      "notes": "September firefight — active in H2"
     },
     {
       "id": "WS3",
